@@ -42,22 +42,26 @@ function renderPotentialPresetItem(item) {
     	var row = DIV(null, addButton, ' ', item.name, addInput);
     	item.preset = true;		
 	}
-
     if (item.type == 'token') {
         connect(addButton, 'onclick', function() {
             sendjsonrequest('newmaptoken.json.php', {'map': {{$mapid}}}, 'POST', function(data) {
                 item.id = data.data.token;
+                item.type = 'token';
                 appendChildNodes('accesslist', renderAccessListItem(item));
             });
         });
     } else if(item.type == 'email') {
         connect(addButton, 'onclick', function() {
+        	var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+            if (addInput.value == '' || reg.test(addInput.value) == false) {
+                alert("Valid email address required!");
+            } else {
             sendjsonrequest('newmaptoken.json.php', {'map': {{$mapid}}, 'email': addInput.value}, 'POST', function(data) {
                 item.id = data.data.token;
                 item.type = 'email';
-                alert(item.type);
                 appendChildNodes('accesslist', renderAccessListItem(item));
             });
+            }
         });        
     }
     else {

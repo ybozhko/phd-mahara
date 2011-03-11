@@ -109,6 +109,8 @@ class ArtefactTypeComment extends ArtefactType {
 
     protected $onview;
     protected $onartefact;
+    protected $onmap;
+    protected $onexample;
     protected $private;
     protected $deletedby;
     protected $requestpublic;
@@ -140,6 +142,8 @@ class ArtefactTypeComment extends ArtefactType {
             'artefact'      => $this->get('id'),
             'onview'        => $this->get('onview'),
             'onartefact'    => $this->get('onartefact'),
+        	'onmap'         => $this->get('onmap'),
+        	'onexample'     => $this->get('onexample'),
             'private'       => $this->get('private'),
             'deletedby'     => $this->get('deletedby'),
             'requestpublic' => $this->get('requestpublic'),
@@ -200,6 +204,16 @@ class ArtefactTypeComment extends ArtefactType {
         self::bulk_delete($commentids);
     }
 
+    public static function delete_map_comments($mapid) {
+        $ids = get_column('artefact_comment_comment', 'artefact', 'onmap', $mapid);
+        self::bulk_delete($ids);
+    }
+    
+    public static function delete_example_comments($exampleid) {
+        $ids = get_column('artefact_comment_comment', 'artefact', 'onexample', $exampleid);
+        self::bulk_delete($ids);
+    }
+    
     public static function get_links($id) {
         return array(
             '_default' => get_config('wwwroot') . 'artefact/comment/view.php?id=' . $id,
@@ -214,94 +228,134 @@ class ArtefactTypeComment extends ArtefactType {
         return array('author', 'owner', 'admin');
     }
 
-    public static function get_comments($limit=10, $offset=0, $showcomment=null, &$view=null, &$artefact=null) {
-        global $USER;
+    public static function get_comments($limit=10, $offset=0, $showcomment=null, &$view=null, &$artefact=null, &$map=null, &$example=null) {
+    	global $USER;
+	
         $userid = $USER->get('id');
-        $viewid = $view->get('id');
-        if (!empty($artefact)) {
-            $canedit = $USER->can_edit_artefact($artefact);
-            $owner = $artefact->get('owner');
-            $isowner = $userid && $userid == $owner;
-            $artefactid = $artefact->get('id');
+        if (!empty($view)) {
+	        $viewid = $view->get('id');
+	        if (!empty($artefact)) {
+	            $canedit = $USER->can_edit_artefact($artefact);
+	            $owner = $artefact->get('owner');
+	            $isowner = $userid && $userid == $owner;
+	            $artefactid = $artefact->get('id');
+	        }
+	        else {
+	            $canedit = $USER->can_edit_view($view);
+	            $owner = $view->get('owner');
+	            $isowner = $userid && $userid == $owner;
+	            $artefactid = null;
+	        }
+	
+	        $result = (object) array(
+	            'limit'    => $limit,
+	            'offset'   => $offset,
+	            'view'     => $viewid,
+	            'artefact' => $artefactid,
+	            'canedit'  => $canedit,
+	            'owner'    => $owner,
+	            'isowner'  => $isowner,
+	            'data'     => array(),
+	        );
+	
+	        if (!empty($artefactid)) {
+	            $where = 'c.onartefact = ' . (int)$artefactid;
+	        }
+	        else {
+	            $where = 'c.onview = ' . (int)$viewid;
+	        }
+	        if (!$canedit) {
+	            $where .= ' AND (c.private = 0 OR a.author = ' . (int) $userid . ')';
+	        }
         }
         else {
-            $canedit = $USER->can_edit_view($view);
-            $owner = $view->get('owner');
-            $isowner = $userid && $userid == $owner;
-            $artefactid = null;
-        }
+        	
+        	$mapid = $map->get('id');
+	        if (!empty($example)) {
+//	            $canedit = $USER->can_edit_artefact($artefact);
+//	            $owner = $artefact->get('owner');
+//	            $isowner = $userid && $userid == $owner;
+//	            $artefactid = $artefact->get('id');
+	        }
+	        else {
+	            $canedit = $USER->can_edit_map($map);
+	            $owner = $map->get('owner');
+	            $isowner = $userid && $userid == $owner;
+	            $exampleid = null;
+	        }   
 
-        $result = (object) array(
-            'limit'    => $limit,
-            'offset'   => $offset,
-            'view'     => $viewid,
-            'artefact' => $artefactid,
-            'canedit'  => $canedit,
-            'owner'    => $owner,
-            'isowner'  => $isowner,
-            'data'     => array(),
-        );
-
-        if (!empty($artefactid)) {
-            $where = 'c.onartefact = ' . (int)$artefactid;
+	       	$result = (object) array(
+	            'limit'    => $limit,
+	            'offset'   => $offset,
+	            'map'      => $mapid,
+	            'example'  => $exampleid,
+	            'canedit'  => $canedit,
+	            'owner'    => $owner,
+	            'isowner'  => $isowner,
+	            'data'     => array(),
+	        );
+	        
+	        if (!empty($exampleid)) {
+	            $where = 'c.onexample = ' . (int)$exampleid;
+	        }
+	        else {
+	            $where = 'c.onmap = ' . (int)$mapid;
+	        }
+	        if (!$canedit) {
+	            $where .= ' AND (c.private = 0 OR a.author = ' . (int) $userid . ')';
+	        }
         }
-        else {
-            $where = 'c.onview = ' . (int)$viewid;
-        }
-        if (!$canedit) {
-            $where .= ' AND (c.private = 0 OR a.author = ' . (int) $userid . ')';
-        }
-
+	    
         $result->count = count_records_sql('
-            SELECT COUNT(*)
-            FROM {artefact} a JOIN {artefact_comment_comment} c ON a.id = c.artefact
-            WHERE ' . $where);
+	    	SELECT COUNT(*)
+	   		FROM {artefact} a JOIN {artefact_comment_comment} c ON a.id = c.artefact
+	    	WHERE ' . $where);	       
 
-        if ($result->count > 0) {
-            if ($showcomment == 'last') { // Ignore $offset and just get the last page of feedback
-                $result->forceoffset = $offset = (ceil($result->count / $limit) - 1) * $limit;
-            }
-            else if (is_numeric($showcomment)) {
-                // Ignore $offset and get the page that has the comment
-                // with id $showcomment on it.
-                // Fetch everything up to $showcomment to get its rank
-                // This will get ugly if there are 1000s of comments
-                $ids = get_column_sql('
-                SELECT a.id
-                FROM {artefact} a JOIN {artefact_comment_comment} c ON a.id = c.artefact
-                WHERE ' . $where . ' AND a.id <= ?
-                ORDER BY a.ctime', array($showcomment));
-                $last = end($ids);
-                if ($last == $showcomment) {
-                    $rank = key($ids);
-                    $result->forceoffset = $offset = ((ceil($rank / $limit) - 1) * $limit);
-                    $result->showcomment = $showcomment;
-                }
-            }
-
-            $comments = get_records_sql_assoc('
-                SELECT
-                    a.id, a.author, a.authorname, a.ctime, a.description,
-                    c.private, c.deletedby, c.requestpublic,
-                    u.username, u.firstname, u.lastname, u.preferredname, u.email, u.staff, u.admin,
-                    u.deleted, u.profileicon
-                FROM {artefact} a
-                    INNER JOIN {artefact_comment_comment} c ON a.id = c.artefact
-                    LEFT JOIN {usr} u ON a.author = u.id
-                WHERE ' . $where . '
-                ORDER BY a.ctime', array(), $offset, $limit);
-
-            $files = ArtefactType::attachments_from_id_list(array_keys($comments));
-
-            if ($files) {
-                safe_require('artefact', 'file');
-                foreach ($files as &$file) {
-                    $comments[$file->artefact]->attachments[] = $file;
-                }
-            }
-
-            $result->data = array_values($comments);
-        }
+       	if ($result->count > 0) {
+			if ($showcomment == 'last') { // Ignore $offset and just get the last page of feedback
+				$result->forceoffset = $offset = (ceil($result->count / $limit) - 1) * $limit;
+	        }
+	        else if (is_numeric($showcomment)) {
+	                // Ignore $offset and get the page that has the comment
+	                // with id $showcomment on it.
+	                // Fetch everything up to $showcomment to get its rank
+	                // This will get ugly if there are 1000s of comments
+	                $ids = get_column_sql('
+	                SELECT a.id
+	                FROM {artefact} a JOIN {artefact_comment_comment} c ON a.id = c.artefact
+	                WHERE ' . $where . ' AND a.id <= ?
+	                ORDER BY a.ctime', array($showcomment));
+	                $last = end($ids);
+	                if ($last == $showcomment) {
+	                    $rank = key($ids);
+	                    $result->forceoffset = $offset = ((ceil($rank / $limit) - 1) * $limit);
+	                    $result->showcomment = $showcomment;
+	                }
+	            }
+	
+	            $comments = get_records_sql_assoc('
+	                SELECT
+	                    a.id, a.author, a.authorname, a.ctime, a.description,
+	                    c.private, c.deletedby, c.requestpublic,
+	                    u.username, u.firstname, u.lastname, u.preferredname, u.email, u.staff, u.admin,
+	                    u.deleted, u.profileicon
+	                FROM {artefact} a
+	                    INNER JOIN {artefact_comment_comment} c ON a.id = c.artefact
+	                    LEFT JOIN {usr} u ON a.author = u.id
+	                WHERE ' . $where . '
+	                ORDER BY a.ctime', array(), $offset, $limit);
+	
+	            $files = ArtefactType::attachments_from_id_list(array_keys($comments));
+	
+	            if ($files) {
+	                safe_require('artefact', 'file');
+	                foreach ($files as &$file) {
+	                    $comments[$file->artefact]->attachments[] = $file;
+	                }
+	            }
+	
+	    	$result->data = array_values($comments);
+	    }	        
 
         self::build_html($result);
         return $result;
@@ -586,7 +640,12 @@ class ArtefactTypeComment extends ArtefactType {
         }
         return $url;
     }
-
+    
+    public function get_map_url($mapid, $showcomment=true) {
+        $url = get_config('wwwroot') . 'concept/viewmap.php?id=' . $mapid;
+        return $url;
+    }
+    
     // Check whether the logged-in user can see a comment within the
     // context of a given view.  Does not check whether the user can
     // view the view.
@@ -708,26 +767,30 @@ function make_public_submit(Pieform $form, $values) {
 }
 
 function delete_comment_submit(Pieform $form, $values) {
-    global $SESSION, $USER, $view;
+    global $SESSION, $USER, $view, $map;
 
     $comment = new ArtefactTypeComment((int) $values['comment']);
+    $canedit = $view ? $USER->can_edit_view($view) : $USER->can_edit_map($map);
 
     if ($USER->get('id') == $comment->get('author')) {
         $deletedby = 'author';
     }
-    else if ($USER->can_edit_view($view)) {
+    else if ($canedit) {
         $deletedby = 'owner';
     }
     else if ($USER->get('admin')) {
         $deletedby = 'admin';
     }
 
-    $viewid = $view->get('id');
+    $view ? $viewid = $view->get('id') : $mapid = $map->get('id');
     if ($artefact = $comment->get('onartefact')) {
         $url = get_config('wwwroot') . 'view/artefact.php?view=' . $viewid . '&artefact=' . $artefact;
     }
-    else {
+    else if ($viewid) {
         $url = get_config('wwwroot') . 'view/view.php?id=' . $viewid;
+    }
+    else if ($mapid) {
+    	 $url = get_config('wwwroot') . 'concept/viewmap.php?id=' . $mapid;
     }
 
     db_begin();
@@ -740,9 +803,13 @@ function delete_comment_submit(Pieform $form, $values) {
         if ($artefact) {
             $title = get_field('artefact', 'title', 'id', $artefact);
         }
-        else {
+        else if ($view) {
             $title = get_field('view', 'title', 'id', $comment->get('onview'));
         }
+        else if ($map) {
+        	$title = get_field('map', 'name', 'id', $comment->get('onview'));
+        }
+        
         $title = hsc($title);
         $data = (object) array(
             'subject'   => false,
@@ -771,7 +838,7 @@ function delete_comment_submit(Pieform $form, $values) {
         // Notify owner
         $data = (object) array(
             'commentid' => $comment->get('id'),
-            'viewid'    => $view->get('id'),
+            'viewid'    => $view ? $view->get('id') : $map->get('id'),
         );
         activity_occurred('feedback', $data, 'artefact', 'comment');
     }
@@ -807,7 +874,7 @@ function add_feedback_form_validate(Pieform $form, $values) {
 }
 
 function add_feedback_form_submit(Pieform $form, $values) {
-    global $view, $artefact, $USER;
+    global $view, $artefact, $USER, $map, $example;
     $data = (object) array(
         'title'       => get_string('Comment', 'artefact.comment'),
         'description' => $values['message'],
@@ -819,11 +886,19 @@ function add_feedback_form_submit(Pieform $form, $values) {
         $data->group       = $artefact->get('group');
         $data->institution = $artefact->get('institution');
     }
-    else {
+    else if ($view) {
         $data->onview      = $view->get('id');
         $data->owner       = $view->get('owner');
         $data->group       = $view->get('group');
         $data->institution = $view->get('institution');
+    }
+    else if ($map) {
+        $data->onmap       = $map->get('id');
+        $data->owner       = $map->get('owner');    	
+    }
+    else {
+        $data->onexample   = $example->get('id');
+        $data->owner       = $map->get('owner');   	
     }
 
     if ($author = $USER->get('id')) {
@@ -832,8 +907,10 @@ function add_feedback_form_submit(Pieform $form, $values) {
     else {
         $data->authorname = $values['authorname'];
     }
-
-    if (isset($values['moderate']) && $values['ispublic'] && !$USER->can_edit_view($view)) {
+    
+	$canedit = $view ? $USER->can_edit_view($view) : $USER->can_edit_map($map);
+    
+	if (isset($values['moderate']) && $values['ispublic'] && !$canedit) {
         $data->private = 1;
         $data->requestpublic = 'author';
     }
@@ -847,7 +924,7 @@ function add_feedback_form_submit(Pieform $form, $values) {
 
     $comment->commit();
 
-    $goto = $comment->get_view_url($view->get('id'));
+    $goto = $view ? $comment->get_view_url($view->get('id')) : $comment->get_map_url($map->get('id'));
 
     if (isset($data->requestpublic) && $data->requestpublic === 'author' && $data->owner) {
         $arg = $author ? display_name($USER, null, true) : $data->authorname;
@@ -898,7 +975,7 @@ function add_feedback_form_submit(Pieform $form, $values) {
                 $ownerlang,
                 'feedbackonviewbyuser',
                 'artefact.comment',
-                $view->get('title'),
+                $view ? $view->get('title') : $map->get('name'),
                 display_name($USER)
             ),
         );
@@ -947,8 +1024,8 @@ function add_feedback_form_submit(Pieform $form, $values) {
 
     db_commit();
 
-    $newlist = ArtefactTypeComment::get_comments(10, 0, 'last', $view, $artefact);
-
+    $newlist = ArtefactTypeComment::get_comments(10, 0, 'last', $view, $artefact, $map, $example);
+  
     $form->reply(PIEFORM_OK, array(
         'message' => get_string('feedbacksubmitted', 'artefact.comment'),
         'goto' => $goto,
@@ -957,16 +1034,24 @@ function add_feedback_form_submit(Pieform $form, $values) {
 }
 
 function add_feedback_form_cancel_submit(Pieform $form) {
-    global $view;
+    global $view, $map;
+    if ($view) {
     $form->reply(PIEFORM_OK, array(
         'goto' => '/view/view.php?id=' . $view->get('id'),
     ));
+    }
+    else {
+    $form->reply(PIEFORM_OK, array(
+        'goto' => '/concept/viewmap.php?id=' . $map->get('id'),
+    ));    	
+    }
 }
 
 class ActivityTypeArtefactCommentFeedback extends ActivityTypePlugin {
 
     protected $viewid;
     protected $commentid;
+    protected $mapid;
 
     /**
      * @param array $data Parameters:
@@ -992,8 +1077,8 @@ class ActivityTypeArtefactCommentFeedback extends ActivityTypePlugin {
                     . $onartefact . '&view=' . $this->viewid;
             }
         }
-        else { // feedback on view.
-            $onview = $comment->get('onview');
+        else if ($onview =$comment->get('onview')) { // feedback on view.
+            //$onview = $comment->get('onview');
             if (!$viewrecord = get_record('view', 'id', $onview)) {
                 throw new ViewNotFoundException(get_string('viewnotfound', 'error', $onview));
             }
@@ -1002,12 +1087,25 @@ class ActivityTypeArtefactCommentFeedback extends ActivityTypePlugin {
                 $this->url = get_config('wwwroot') . 'view/view.php?id=' . $onview;
             }
         }
+        else if ($onmap = $comment->get('onmap')) { //feedback on map
+            if (!$viewrecord = get_record('map', 'id', $onmap)) {
+                throw new MapNotFoundException(get_string('mapnotfound', 'error', $onmap));
+            }
+            $userid = $viewrecord->owner;
+            if (empty($this->url)) {
+                $this->url = get_config('wwwroot') . 'concept/viewmap.php?id=' . $onmap;
+            }        	
+        }
+        else {
+        	$onexample = $comment->get('onexample');
+        }
+        
         if (empty($userid)) {
             return;
         }
 
         $this->users = activity_get_users($this->get_id(), array($userid));
-        $title = $onartefact ? $artefactinstance->get('title') : $viewrecord->title;
+        $title = ($onartefact || $onexample) ? $artefactinstance->get('title') : $viewrecord->title; //TODO: correct later
         $this->urltext = $title;
         $body = $comment->get('description');
         $posttime = strftime(get_string('strftimedaydatetime'), $comment->get('ctime'));

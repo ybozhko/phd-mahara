@@ -154,7 +154,16 @@ class ConceptMap {
         db_commit();    	
     }
     
-    
+    public function display_title() {
+        $wwwroot = get_config('wwwroot');
+        $owner = get_record('usr', 'id', $this->get('owner'));
+        $ownername = $owner->firstname . ' ' . $owner->lastname;
+        $ownerlink = $wwwroot . 'user/view.php?id=' . $this->owner;
+        $title = '<strong>' . hsc($this->name) . '</strong>';
+
+        return get_string('viewtitleby', 'view', $title, $ownerlink, $ownername);
+    }
+        
 	public function get_access($timeformat=null) {
 
         $data = get_records_sql_array("
@@ -315,7 +324,88 @@ class ConceptMap {
 
         db_commit();
     }
-        
+
+    public static function user_access_records($mapid, $userid) {
+        static $mapaccess = array();
+        $userid = (int) $userid;
+
+        if (!isset($mapaccess[$mapid][$userid])) {
+
+            $mapaccess[$mapid][$userid] = get_records_sql_array("
+                SELECT va.*
+                FROM {concept_access} va
+                    LEFT OUTER JOIN {group_member} gm
+                    ON (va.group = gm.group AND gm.member = ?
+                        AND (va.role = gm.role OR va.role IS NULL))
+                WHERE va.map = ?
+                    AND (va.startdate IS NULL OR va.startdate < current_timestamp)
+                    AND (va.stopdate IS NULL OR va.stopdate > current_timestamp)
+                    AND (va.accesstype IN ('public', 'loggedin', 'friends', 'objectionable')
+                         OR va.usr = ? OR va.token IS NOT NULL OR gm.member IS NOT NULL)
+                ORDER BY va.token IS NULL DESC, va.accesstype != 'friends' DESC",
+                array($userid, $mapid, $userid)
+            );
+        }
+
+        return $mapaccess[$mapid][$userid];
+    }
+    
+    public function user_comments_allowed(User $user) {
+        global $SESSION;
+
+        if (!$user->is_logged_in() && !get_config('anonymouscomments')) {
+            return false;
+        }
+
+        if ($this->get('allowmapcomments')) {
+            return $this->get('approvecomments') ? 'private' : true;
+        }
+
+        $userid = $user->get('id');
+        $access = self::user_access_records($this->id, $userid);
+
+        $allowmapcomments = false;
+        $approvecomments = true;
+
+        $mnettoken = get_cookie('mmapaccess:'.$this->id);
+        $usertoken = get_cookie('mapaccess:'.$this->id);
+
+        foreach ($access as $a) {
+            if ($a->accesstype == 'public') {
+                    continue;
+            }
+            else if ($a->token && $a->token != $mnettoken && $a->token != $usertoken) {
+                continue;
+            }
+            else if (!$user->is_logged_in()) {
+                continue;
+            }
+            else if ($a->accesstype == 'friends') {
+                $owner = $this->get('owner');
+                if (!get_field_sql('
+                    SELECT COUNT(*) FROM {usr_friend} f WHERE (usr1=? AND usr2=?) OR (usr1=? AND usr2=?)',
+                    array($owner, $userid, $userid, $owner)
+                )) {
+                    continue;
+                }
+            }
+
+            if ($a->allowmapcomments) {
+                $allowmapcomments |= $a->allowmapcomments;
+                $approvecomments &= $a->approvecomments;
+            }
+            if (!$approvecomments) {
+                return true;
+            }
+        }
+
+        if ($allowmapcomments) {
+            return $approvecomments ? 'private' : true;
+        }
+
+        return false;
+    }
+    
     public static function get_mymaps_data($offset=0, $limit=10) {
         global $USER;
 

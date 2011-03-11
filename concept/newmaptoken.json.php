@@ -30,16 +30,14 @@ define('JSON', 1);
 
 require(dirname(dirname(__FILE__)) . '/init.php');
 
-if (param_variable('email')) {
-	if (!$data = new_mail(param_variable('email'), param_integer('map'))) {
-		json_reply(true, get_string('createviewtokenfailed', 'map'));
-	} 
-}else {
-	if (!$data = new_token(param_integer('map'))) {
-    	json_reply(true, get_string('createviewtokenfailed', 'map'));
-	}
+if (!empty($_POST['email'])) {
+	if (!$data = new_mail(param_variable('email'), param_integer('map'))) json_reply(true, get_string('createviewtokenfailed', 'map'));
+}
+else {
+	if (!$data = new_token(param_integer('map'))) json_reply(true, get_string('createviewtokenfailed', 'map'));
 }
 json_reply(false, array('message' => null, 'data' => $data));
+exit;
 
 function new_token($mapid) {
 	$data = new StdClass;

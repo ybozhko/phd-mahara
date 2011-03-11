@@ -62,6 +62,7 @@ $js = <<<EOF
 
 			function CreateTree(nodes) {
 				t = new ECOTree('t','sample1');	
+				t.config.useTarget = false;
 					
 				for (i in nodes) {
 					if (nodes[i][2] == 1) {

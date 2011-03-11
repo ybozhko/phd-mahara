@@ -970,6 +970,7 @@ class ArtefactTypeFile extends ArtefactTypeFileBase {
         delete_records('artefact_attachment', 'attachment', $this->id);
         delete_records('artefact_file_files', 'artefact', $this->id);
         delete_records('site_menu', 'file', $this->id);
+        delete_records('concept_example', 'aid', $this->id);
         parent::delete();
     }
 

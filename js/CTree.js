@@ -304,7 +304,7 @@ ECOTree = function (obj, elm) {
         selectMode : ECOTree.SL_SINGLE,
         defaultNodeWidth : 90,
         defaultNodeHeight : 50,
-        defaultTarget : 'javascript:void(0);',
+        defaultTarget : 'javascript:showExamples();',
         expandedImage : '../theme/raw/static/images/icon-less.gif',
         collapsedImage : '../theme/raw/static/images/icon-add.gif',
         transImage : '../theme/raw/static/images/icon-trans.gif'
@@ -781,7 +781,7 @@ ECOTree.prototype._drawTree = function () {
                 s.push('<img src="' + this.config.transImage + '" >');
             }
             if (node.target && this.config.useTarget) {
-                s.push('<a id="t' + node.id + '" href="' + node.target + '">');
+                s.push('<a style="text-decoration: none; color: black" id="t' + node.id + '" href="' + node.target + '">');
                 s.push(node.dsc);
                 s.push('</a>');
             } else {

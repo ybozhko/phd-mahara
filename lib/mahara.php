@@ -1711,6 +1711,35 @@ function get_view_from_token($token, $visible=true) {
 }
 
 /**
+ * Return the map associated with a given token, and set the
+ * appropriate access cookie.
+ */
+function get_map_from_token($token) {
+    if (!$token) {
+        return false;
+    }
+    $mapids = get_column_sql('
+        SELECT "map"
+        FROM {concept_access}
+        WHERE token = ?
+            AND (startdate IS NULL OR startdate < current_timestamp)
+            AND (stopdate IS NULL OR stopdate > current_timestamp)
+        ORDER BY "map" ', array($token)
+    );
+    if (empty($mapids)) {
+        return false;
+    }
+    $mapid = $mapids[0];
+    if ($token != get_cookie('mmapaccess:'.$mapid)) {
+        set_cookie('mmapaccess:'.$mapid, $token);
+    }
+    if ($token != get_cookie('mapaccess:'.$mapid)) {
+        set_cookie('mapaccess:'.$mapid, $token);
+    }
+    return $mapid;
+}
+
+/**
  * Determine whether a view is accessible by a given token
  */
 function view_has_token($view, $token) {

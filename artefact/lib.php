@@ -628,7 +628,8 @@ abstract class ArtefactType {
         delete_records_select('artefact_tag', "artefact IN $idstr");
         delete_records_select('artefact_access_role', "artefact IN $idstr");
         delete_records_select('artefact_access_usr', "artefact IN $idstr");
-
+		delete_records_select('concept_example', "aid IN $idstr");
+        
         delete_records_select('artefact', "id IN $idstr");
 
         db_commit();
