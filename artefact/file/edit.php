@@ -139,11 +139,12 @@ function editfragment_submit(Pieform $form, $values) {
     $fordb = (object) array(
 	    'id' => isset($values['fragment']) ? $values['fragment'] : 0,
 		'aid' => $aid,
-		'cid' => $values['concept'],
+		'cid' => !empty($values['concept']) ? $values['concept'] : null,
     	'type' => $values['etype'],
 		'title' => $values['title'],
 		'reflection' =>  $values['reflection'],
-		'config' => $values['config']
+		'config' => $values['config'],
+    	'complete' => $values['complete'],
 	);
 	
 	db_begin();

@@ -52,9 +52,11 @@
       <div class="viewheader">
 
 {if $collection}
-        <div class="left cb" id="collection"><strong>{$microheadertitle|safe}</strong> : {include file=collectionnav.tpl}</div>
+	<div class="left cb" id="collection"><strong>{$microheadertitle|safe}</strong> : {include file=collectionnav.tpl}</div>
+{elseif $map}
+	<div class="left cb" id="collection"><strong>{$microheadertitle|safe}</strong> : {include file=mapnav.tpl}</div>
 {else}
-        <div class="center cb title">{$microheadertitle|safe}</div>
+    <div class="center cb title">{$microheadertitle|safe}</div>
 {/if}
       </div>
     </div>

@@ -646,7 +646,7 @@ class Concepts {
     }    
     
     public static function get_concepts_timeline($mapid, $timeframe) {
-    	($records = get_records_sql_array("SELECT a.id, a.aid, a.title, a.reflection, a.config, a.type, d.ctime 
+    	($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, d.ctime 
     									FROM {concept_example} a 
     									INNER JOIN {concepts} b ON
     									b.id = a.cid
@@ -658,12 +658,13 @@ class Concepts {
     	
     	if (!in_array($timeframe, array('Y', 'M-Y'))) {
 
-    		$frames = get_records_array('concept_timeframe','parent', $timeframe, 'start ASC');
-    		
+    		$frames = get_records_array('concept_timeframe', 'parent', $timeframe, 'start ASC');
+   		
     		foreach($frames as $frame) {
     			$s = strtotime($frame->start);
     			$e = strtotime($frame->end);
-    			foreach($records as $record) {
+    			foreach($records as $record) { 
+    				$record->concept = get_concept_name($record->cid);
     				if (strtotime($record->ctime) >= $s && strtotime($record->ctime) <= $e) {
     					$dates[$frame->name][] = $record;
     					unset($record);
@@ -674,6 +675,7 @@ class Concepts {
     	else {
     		$dates = array();
     		foreach($records as $record) {
+    			$record->concept = get_concept_name($record->cid);
     			$dates[date($timeframe, strtotime($record->ctime))][] = $record;
     		}
     	}

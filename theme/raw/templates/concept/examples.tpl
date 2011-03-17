@@ -25,6 +25,9 @@
 		<td>
 			<h4>Reflection</h4>
 			<p>{$example->reflection|clean_html|safe}</p>
+			{if $example->complete == 1}
+				<p><a href="{$WWWROOT}/artefact/file/download.php?file={$example->aid}">Download entire file</a></p>
+			{/if}
 			<p><i>{$example->ctime|date_format:"%d-%m-%Y"}</i></p> 
 		</td></tr>
 		</table>

@@ -59,6 +59,10 @@ else {
     $mapid = param_integer('id');
 }
 
+if (!can_view_map($mapid)) {
+    throw new AccessDeniedException(get_string('accessdenied', 'error'));
+}
+
 // Feedback list pagination requires limit/offset params
 $limit       = param_integer('limit', 10);
 $offset      = param_integer('offset', 0);
@@ -95,8 +99,25 @@ $javascript = <<<EOF
 
 		function showExamples(nodeid) {
 			$("#conceptmap").css({'overflow':'hidden', 'height':'0px'});
-			$('#examples').load("{$wwwroot}concept/examples.php?id="+nodeid);
-			$("#examples").css('height', '100%');
+
+			$.post('viewexamples.php', 
+				'id=' + nodeid, 
+				function (result) {
+            		$('#examples').html(result);
+            		
+					$('#accordion').accordion({ // STUPID THING IS NOT WORKING!!! :(
+						fillSpace: true, 
+						clearStyle: true
+					});
+            	});
+
+    		$('#examples').css('height', '100%');
+		}
+		
+		function showMap() {
+			$("#examples").css({'overflow':'hidden', 'height':'0px'});
+			$('#backBtn').remove();
+			$('#conceptmap').css('height', '100%');
 		}
 EOF;
 
@@ -111,7 +132,6 @@ else if (param_variable('delete_comment_submit', null)) {
 // If the view has comments turned off, tutors can still leave
 // comments if the view is submitted to their group.
 if ($commenttype = $map->user_comments_allowed($USER)) {
-
     $moderate = isset($commenttype) && $commenttype === 'private';
     $addfeedbackform = pieform(ArtefactTypeComment::add_comment_form(false, $moderate));
 }
@@ -129,7 +149,7 @@ $stylesheet = array(
 			  );
 
 $smarty = smarty(
-	array('paginator', 'viewmenu', 'artefact/resume/resumeshowhide.js', 'jquery', 'CTree',), 
+	array('paginator', 'viewmenu', 'artefact/resume/resumeshowhide.js', 'jquery', 'CTree', 'jquery-ui', 'jquery.jcrop'), 
 	$stylesheet, 
 	array(), 
 	array('stylesheets' => array('style/views.css'), 'sidebars' => false,)
@@ -180,9 +200,13 @@ if (get_config('viewmicroheaders')) {
     }
 }
 
+$smarty->assign('PAGETITLE', strip_tags($map->display_title()));
+
 $smarty->assign('INLINEJAVASCRIPT', $javascript);
 $smarty->assign('feedback', $feedback);
-$smarty->assign('mapname', get_string('mapname', 'concept', $map->get('name')));
+$smarty->assign('map', $map);
+$smarty->assign('id', $mapid);
+$smarty->assign('layout', 1);
 
 if (isset($addfeedbackform)) {
     $smarty->assign('enablecomments', 1);

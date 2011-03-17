@@ -33,6 +33,7 @@ require_once('file.php');
 
 $fileid = param_integer('file');
 $viewid = param_integer('view', null);
+$mapid = param_integer('map', null);
 $size   = get_imagesize_parameters();
 $forcedl = param_boolean('download');
 
@@ -46,7 +47,7 @@ else {
         . '&download=1';
 }
 
-if ($viewid && $fileid) {
+if (($viewid || $mapid) && $fileid) {
 
     // The user may be trying to download a file that's not in the view, but which has
     // been attached to public feedback on the view
@@ -56,15 +57,15 @@ if ($viewid && $fileid) {
         }
         safe_require('artefact', 'comment');
         $comment = new ArtefactTypeComment($commentid);
-        if (!$comment->viewable_in($viewid)) {
+        if (!$comment->viewable_in($viewid ? $viewid : $mapid)) {
             throw new AccessDeniedException('');
         }
     }
-    else if (!artefact_in_view($fileid, $viewid)) {
+    else if ($viewid && !artefact_in_view($fileid, $viewid)) {
         throw new AccessDeniedException('');
     }
 
-    if (!can_view_view($viewid)) {
+    if ($viewid && !can_view_view($viewid)) {
         throw new AccessDeniedException('');
     }
 

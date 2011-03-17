@@ -1507,10 +1507,14 @@ function get_fragments($artefact) {
 
 	if ($examples) {
 		foreach ($examples as $example) {
-			$concept_name = get_concept_name($example->cid);
-			
-			$example->concept = $concept_name;
-			$example->map = get_record('concepts', 'id', $example->cid)->map;
+			if ($example->cid != null) {
+				$concept_name = get_concept_name($example->cid);
+				$example->concept = $concept_name;
+				$example->map = get_record('concepts', 'id', $example->cid)->map;
+			}
+			else {
+				$example->concept = null;				
+			}			
 		}
 	}
 	
@@ -1555,8 +1559,15 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 					'value' => "<img id='cropbox' src ='" . get_config('wwwroot') . "/artefact/file/download.php?file=". $artefact ."' width='600px'>",
 					'description' => 'You can select an image fragment in a usual way: press the left mouse button, drag cursor, release the button.'
 				),
+				'complete' => array(                
+					'type' => 'checkbox',
+					'title' => 'Enable downloads',
+					'description' => 'Check this box if you want others to be able to view and download an entire file',
+					'defaultvalue' => $data ? $data->complete : null,
+				),	
 			),
 		); 
+	
 		$elements['config'] = array(                
 			'type' => 'text',
 			'defaultvalue' => $data ? $data->config : null,
@@ -1600,7 +1611,13 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
                 		'required' => true,
 						'regex'    => '/([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])/'
             		),
-				),			
+				),
+				'complete' => array(                
+					'type' => 'checkbox',
+					'title' => 'Enable downloads',
+					'description' => 'Check this box if you want others to be able to view and download an entire file',
+					'defaultvalue' => $data ? $data->complete : null,
+				),				
 			),
 		);
 		$elements['etype'] = array(                
@@ -1627,7 +1644,13 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 					'value' => "<textarea id='filebox' style='width: 650px; height: 550px; overflow: auto;'> </textarea>
 								<br/><h4>Selected fragment</h4>
 								<div id='selection' style='width: 650px; max-height: 350px; overflow: auto;'>" . $text . "</div>"
-				),		
+				),
+				'complete' => array(                
+					'type' => 'checkbox',
+					'title' => 'Enable downloads',
+					'description' => 'Check this box if you want others to be able to view and download an entire file',
+					'defaultvalue' => $data ? $data->complete : null,
+				),			
 			),
 	    );
 	    $elements['config'] = array(                
@@ -1676,8 +1699,7 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 				'title'        => 'Concept',
 				'description'  => 'Select a concept related to this example',
 				'defaultvalue' => $data ? $data->cid : '',
-				'options'      => array('' => 'No concept selected') + $list,
-				'rules' => array('required' => true),
+				'options'      => array('' => 'Free fragment') + $list,
 			),
 		),	
 	);

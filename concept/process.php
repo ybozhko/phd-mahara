@@ -42,10 +42,12 @@ if(isset($tf)) {
 	$stylesheet = array(
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/concept.css">',
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/jquery-ui.css">',
+			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/views.css">'
 			);
 	
 	$data = Concepts::get_concepts_timeline($_POST['map'], $tf);
-	$smarty = smarty(array('jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), $stylesheet);	
+	$smarty = smarty(array('jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), $stylesheet);
+	$smarty->assign('id', $_POST['map']);	
 	$smarty->assign('examples', $data);
 	$output = $smarty->fetch('concept/frame.tpl');
 	echo($output);

@@ -781,7 +781,7 @@ ECOTree.prototype._drawTree = function () {
                 s.push('<img src="' + this.config.transImage + '" >');
             }
             if (node.target && this.config.useTarget) {
-                s.push('<a style="text-decoration: none; color: black" id="t' + node.id + '" href="' + node.target + '">');
+                s.push('<a style="text-decoration: none; color: #333333" id="t' + node.id + '" href="' + node.target + '">');
                 s.push(node.dsc);
                 s.push('</a>');
             } else {

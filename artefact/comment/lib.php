@@ -675,6 +675,14 @@ class ArtefactTypeComment extends ArtefactType {
         if ($onartefact = $this->get('onartefact')) {
             return artefact_in_view($onartefact, $viewid);
         }
+        
+        if ($onmap = $this->get('onmap')) {
+        	return $onmap == $viewid;
+        }
+        
+        if ($onexample = $this->get('onexample')) {
+            return $onexample == $viewid;
+        }
 
         return false;
     }

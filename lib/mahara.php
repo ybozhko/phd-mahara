@@ -1710,6 +1710,97 @@ function get_view_from_token($token, $visible=true) {
     return $viewid;
 }
 
+function can_view_map($map_id, $user_id=null) {
+    global $USER, $SESSION;
+
+    if (defined('BULKEXPORT')) {
+        return true;
+    }
+
+    $now = time();
+    $dbnow = db_format_timestamp($now);
+
+    if ($user_id === null) {
+        $user = $USER;
+        $user_id = $USER->get('id');
+    }
+    else {
+        $user = new User();
+        if ($user_id) {
+            try {
+                $user->find_by_id($user_id);
+            }
+            catch (AuthUnknownUserException $e) {}
+        }
+    }
+
+    if (!$user_id) {
+        return false;
+    }
+
+    require_once(get_config('libroot') . 'concept.php');
+    $map = new ConceptMap($map_id);
+
+    if ($user_id && $user->can_edit_map($map)) {
+        return true;
+    }
+
+    $access = ConceptMap::user_access_records($map_id, $user_id);
+
+    if (empty($access)) {
+        return false;
+    }
+
+    if ($SESSION->get('mnetuser')) {
+        $mnettoken = get_cookie('mmapaccess:'.$view_id);
+    }
+
+    foreach ($access as &$a) {
+        if ($a->accesstype == 'public') {
+        	return true;
+        }
+        else if ($a->token) {
+            $usertoken = get_cookie('mapaccess:'.$map_id);
+            if ($a->token == $usertoken) {
+                return true;
+            }
+            if (!empty($mnettoken) && $a->token == $mnettoken) {
+                $mnetmaplist = $SESSION->get('mnetmapaccess');
+                if (empty($mnetmaplist)) {
+                    $mnetmaplist = array();
+                }
+                $mnetmaplist[$map_id] = true;
+                $SESSION->set('mnetmapaccess', $mnetmaplist);
+                return true;
+            }
+        }
+        else if ($user_id) {
+            if ($a->accesstype == 'friends') {
+                $owner = $map->get('owner');
+                if (!get_field_sql('
+                    SELECT COUNT(*) FROM {usr_friend} f WHERE (usr1=? AND usr2=?) OR (usr1=? AND usr2=?)',
+                    array($owner, $user_id, $user_id, $owner)
+                )) {
+                    continue;
+                }
+            }
+            else if ($a->accesstype == 'objectionable') {
+                if ($owner = $map->get('owner')) {
+                    if ($user->is_admin_for_user($owner)) {
+                        return true;
+                    }
+                }
+                else if ($view->get('group') && $user->get('admin')) {
+                    return true;
+                }
+                continue;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Return the map associated with a given token, and set the
  * appropriate access cookie.

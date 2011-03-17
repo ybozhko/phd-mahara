@@ -9,7 +9,7 @@
         {foreach from=$maps item=map}
         	<tr class="{cycle values='r0,r1'}">
             	<td><div class="rel">
-            		<h3>{$map->name}</a></h3>
+            		<h3><a href="{$WWWROOT}concept/viewmap.php?id={$map->id}">{$map->name}</a></h3>
             		
             		<div class="concept-controls">
             			<a href="{$WWWROOT}concept/edit.php?id={$map->id}" class="btn-edit"></a><a href="{$WWWROOT}concept/delete.php?id={$map->id}" class="btn-del"></a>

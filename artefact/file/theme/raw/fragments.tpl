@@ -22,9 +22,15 @@
         		<div class="codesc"><label>Reflection:</label> {$fragment->reflection}</div>
         		<div class="fl">
 					<ul>
-						<li><label>Concept: </label><a href="{$WWWROOT}concept/map.php?id={$fragment->map}">{$fragment->concept} </a></li>
+						<li><label>Concept: </label>
+						{if (isset($fragment->concept))}
+							<a href="{$WWWROOT}concept/map.php?id={$fragment->map}">{$fragment->concept} </a>
+						{else}
+							Free fragment
+						{/if}
+						</li>
 						<li><label>Fragment: </label> {$fragment->config|clean_html|safe}</li>
-						<li><label>Time tag: </label> none</li>
+						<li><label>Available for download: </label> {if $fragment->complete == 1} Yes {else} No {/if}</li>
 					</ul>
         		</div>
 			</td>

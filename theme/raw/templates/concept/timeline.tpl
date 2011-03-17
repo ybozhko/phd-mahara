@@ -1,5 +1,16 @@
-{include file="header.tpl"}
+{if $microheaders}
+	{include file="viewmicroheader.tpl"}
+{else}
+	{include file="header.tpl"}
 	<h2>{$mapname}</h2><a href="{$WWWROOT}concept/map.php?id={$id}">{str tag="switch" section="concept"}{str tag="conceptmap" section="concept"}</a>
+{/if}
+
+{if !$microheaders && $mnethost}
+<div class="rbuttons">
+  <a href="{$mnethost.url}">{str tag=backto arg1=$mnethost.name}</a>
+</div>
+{/if}
+
   	<br>
   	<label>Select time frame</label>
   	<select onchange="changeTimeFrame($(this).val());">
@@ -9,7 +20,6 @@
   			<option value="{$frame->id}">{$frame->name}</option>
   		{/foreach}
 	</select>
-
 
 	<div id="main-timeline">	
     <div id="timelineLimiter"> 
@@ -25,16 +35,18 @@
                 		{$event->title}
  						<div style="display:none;" id="_{$event->id}" title="{$event->title}">
  						
-							<table border='0'><tr>
+							<table border='0'>
+								<tr><td colspan='2'><label>Concept: </label>{$event->concept}</td></tr>
+								<tr>
 								{if $event->type == 'image'}
-									<td width='50%'><img id='cropbox_{$event->id}' alt='{$event->config}' src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}' width='600px'/></td>
+									<td width='50%'><img id='cropbox_{$event->id}' alt='{$event->config}' src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}' width='600px'/></td>
 								{elseif $event->type == 'video'}
 									{assign var=time value=","|explode:$event->config} 
 									<td width='50%'>
 								  	<video id="video_{$event->id}" oncanplay="startVideo({$event->id}, {$time[0]})" ontimeupdate="stopVideo({$event->id}, {$time[0]}, {$time[1]})" autobuffer="true" width="400px" height="300px">
-						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}" type='video/ogg; codecs="theora, vorbis"'>
-						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-						    			<source src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}' type='video/3gpp; codecs="mp4v.20.8, samr"'>
+						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}" type='video/ogg; codecs="theora, vorbis"'>
+						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
+						    			<source src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}' type='video/3gpp; codecs="mp4v.20.8, samr"'>
 						  			</video>
 									
 						  			<p><input type="button" value="Play" id="playpause_{$event->id}" onclick="playOrPause({$event->id})"></p>
@@ -46,6 +58,9 @@
 								<td>
 									<h4>Reflection</h4>
 									<p>{$event->reflection|nl2br}</p>
+									{if $event->complete == 1}
+										<p><a href="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}">Download entire file</a></p>
+									{/if}
 									<p id="date">{$event->ctime|date_format:"%d-%m-%Y"}</p>
 								</td></tr>
 							</table> 						
@@ -77,4 +92,27 @@
         </div>
 	</div>
 	</div>
-{include file="footer.tpl"}
+	
+{if $microheaders}
+  	<div class="viewfooter">
+    {if $feedback->count || $enablecomments}
+    <table id="feedbacktable" class="fullwidth table">
+      <thead><tr><th>{str tag="feedback" section="artefact.comment"}</th></tr></thead>
+      <tbody>
+        {$feedback->tablerows|safe}
+      </tbody>
+    </table>
+    {$feedback->pagination|safe}
+    {/if}
+	<div id="viewmenu">
+        {if $enablecomments}
+  			<a id="add_feedback_link" class="feedback" href="">{str tag=placefeedback section=artefact.comment}</a> |
+		{/if}
+    </div>
+    {if $addfeedbackform}<div>{$addfeedbackform|safe}</div>{/if}
+
+  	</div>
+	{include file="microfooter.tpl"}
+{else}
+	{include file="footer.tpl"}
+{/if}
