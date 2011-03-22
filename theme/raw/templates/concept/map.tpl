@@ -36,4 +36,8 @@
 	<div style="display: none" id="rdialog" title="Are you sure that you want remove this item?">
 		<p>This action will delete all related definitions and examples.</p>
 	</div> 
+	
+	<div id="edialog" title="Free fragments">
+
+	</div> 
 {include file="footer.tpl"}

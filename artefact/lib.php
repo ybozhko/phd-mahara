@@ -1544,8 +1544,13 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 					WHERE m.owner = ? AND c.type = 0 ORDER BY id ASC
 					", array($user));
 	
-	foreach ($conceptlist as $concept) {
-		$list[$concept->id] = get_concept_name($concept->id);
+	if ($conceptlist) {
+		foreach ($conceptlist as $concept) {
+			$list[$concept->id] = get_concept_name($concept->id);
+		}
+	}
+	else {
+		$list = array();
 	}
 	
 	if (in_array($extension, $images)) {

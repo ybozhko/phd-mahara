@@ -523,6 +523,7 @@ input#files_filebrowser_edit_artefact:active {
 div.btn-del input.submit,
 div.btn-fragments input.submit, 
 input.submit.btn-del,
+input.submit.btn-copy,
 div.btn-add input.submit, 
 input.submit.btn-add, 
 button.btn-add,
@@ -569,6 +570,10 @@ div.btn-edit input.submit,
 	text-indent: -9999px;
 }
 .listing .rbuttons a.btn-del:hover {
+	text-decoration: none;
+}
+
+.listing .rbuttons a.btn-copy:hover {
 	text-decoration: none;
 }
 
@@ -639,6 +644,10 @@ div.btn-edit input.submit,
 .btn-del {
     background: transparent url(../images/icon-delete.gif) no-repeat left;
     color: #ca0000 !important;
+	padding-left: 13px;
+}
+.btn-copy {
+    background: transparent url(../images/icon-add.gif) no-repeat left;
 	padding-left: 13px;
 }
 .btn-manage {

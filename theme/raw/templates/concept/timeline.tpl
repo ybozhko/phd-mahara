@@ -13,11 +13,18 @@
 
   	<br>
   	<label>Select time frame</label>
-  	<select onchange="changeTimeFrame($(this).val());">
+  	<select onchange="changeTimeFrame($(this).val());" id='timeframes'>
 		<option value="M-Y" selected>Month</option>
 		<option value="Y">Year</option>
   		{foreach from=$tf item=frame}
   			<option value="{$frame->id}">{$frame->name}</option>
+  		{/foreach}
+	</select>
+	
+  	<label>Select concept</label>
+  	<select onchange="changeConcept($(this).val());" id='concepts'>
+  		{foreach from=$concepts key=k item=concept}
+  			<option value="{$k}">{$concept}</option>
   		{/foreach}
 	</select>
 

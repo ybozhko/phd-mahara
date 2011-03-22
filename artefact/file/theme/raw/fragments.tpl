@@ -13,6 +13,7 @@
 				<div class="fr">
                 	<ul class="groupuserstatus">
                    		<li><a href="{$WWWROOT}artefact/file/edit.php?fid={$fragment->id}&id={$id}" class="icon btn-edit">{str tag="edit"}</a></li>
+                    	<li><a href="{$WWWROOT}artefact/file/copy.php?delete={$fragment->id}&id={$id}" class="icon btn-copy">Copy</a></li>
                     	<li><a href="{$WWWROOT}artefact/file/edit.php?delete={$fragment->id}&id={$id}" class="icon btn-del">{str tag="delete"}</a></li>
                 	</ul>
             	</div>

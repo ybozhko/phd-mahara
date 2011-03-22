@@ -37,15 +37,17 @@ require_once('concept.php');
 
 $delete = $_POST['delete'];
 $tf = $_POST['tf'];
+$cn = $_POST['cn'];
+$def = $_POST['def'];
 
-if(isset($tf)) {
+if(isset($tf) && isset($cn)) {
 	$stylesheet = array(
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/concept.css">',
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/jquery-ui.css">',
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/views.css">'
 			);
 	
-	$data = Concepts::get_concepts_timeline($_POST['map'], $tf);
+	$data = Concepts::get_concepts_timeline($_POST['map'], $tf, $cn);
 	$smarty = smarty(array('jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), $stylesheet);
 	$smarty->assign('id', $_POST['map']);	
 	$smarty->assign('examples', $data);
@@ -54,16 +56,31 @@ if(isset($tf)) {
 }
 else {
 	if (!isset($delete)) {
-		$data = (object)array(
-			'map' => $_POST['map'],
-			'parent' => $_POST['parent'],
-			'type' => $_POST['type'],
-			'name' => $_POST['name'],
-			'description' => $_POST['description'],
-			'link' => null
-		);
-	
-		Concepts::save($data);
+		if(!isset($def)) {
+			$data = (object)array(
+				'map' => $_POST['map'],
+				'parent' => $_POST['parent'],
+				'type' => $_POST['type'],
+				'name' => $_POST['name'],
+				'description' => $_POST['description'],
+				'link' => null
+			);
+		
+			Concepts::save($data);
+		}
+		else {	
+			$ids = array();
+					
+			foreach($_POST['db'] as $i)
+				$ids[] = $i;
+
+			if($ids) {
+				$strids = join(',', $ids);
+				db_begin();
+				execute_sql("UPDATE {concept_example} SET cid = ? WHERE id IN ($strids)", array($def));
+				db_commit();
+			}
+		}
 	} 
 	else {
 		$toremove = $_POST['id'];

@@ -43,6 +43,8 @@ $data = Concepts::get_concepts_timeline($mapid, 'M-Y');
 $tf = get_records_sql_array('SELECT t.name, t.id FROM {concept_timeframe} t 
 							INNER JOIN {concept_map_timeframe} m on m.timeframe=t.id WHERE m.map = ? ', array($mapid));
 
+$concepts = Concepts::get_concepts_list($mapid);
+
 $stylesheet = array(
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/concept.css">',
 			'<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/jquery-ui.css">',
@@ -51,7 +53,16 @@ $stylesheet = array(
 $js = <<<EOF
 	function changeTimeFrame(tf) {
 		$.post('process.php', 
-			'map=' + $mapid + '&tf=' + tf, 
+			'map=' + $mapid + '&tf=' + tf + '&cn=' + $('#concepts').val(), 
+			function (result) {
+            	$('#main-timeline').html(result);
+            	loadTimeline();
+            });
+    }; 
+    
+    function changeConcept(cn) {
+		$.post('process.php', 
+			'map=' + $mapid + '&tf=' + $('#timeframes').val() + '&cn=' + cn, 
 			function (result) {
             	$('#main-timeline').html(result);
             	loadTimeline();
@@ -89,6 +100,7 @@ $smarty = smarty(array('jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), $styl
 $smarty->assign('examples', $data);
 $smarty->assign('id', $map->get('id'));
 $smarty->assign('tf', $tf);
+$smarty->assign('concepts', $concepts);
 $smarty->assign('INLINEJAVASCRIPT', $js);
 $smarty->assign('mapname', get_string('mapname', 'concept', $map->get('name')));
 $smarty->display('concept/timeline.tpl');

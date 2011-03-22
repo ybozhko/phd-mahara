@@ -502,6 +502,8 @@ class Concepts {
     private $parent;
     private $link;
     
+    private $concepts;
+    
     public function __construct($id=0, $data=null) {
     	if (!empty($id)) {
         	$tempdata = get_record('concepts', 'id', $id);
@@ -645,8 +647,9 @@ class Concepts {
     	return $cid;
     }    
     
-    public static function get_concepts_timeline($mapid, $timeframe) {
-    	($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, d.ctime 
+    public static function get_concepts_timeline($mapid, $timeframe, $concept=0) {
+    	if ($concept == 0) {
+    		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, d.ctime 
     									FROM {concept_example} a 
     									INNER JOIN {concepts} b ON
     									b.id = a.cid
@@ -654,7 +657,19 @@ class Concepts {
     									d.id = a.aid
     									WHERE b.map = ? 
     									ORDER BY d.ctime ASC", array($mapid)))
-    	|| ($records = array());
+    		|| ($records = array());
+    	}
+    	else {
+    		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, d.ctime 
+    									FROM {concept_example} a 
+    									INNER JOIN {concepts} b ON
+    									b.id = a.cid
+    									INNER JOIN {artefact} d ON
+    									d.id = a.aid
+    									WHERE b.id IN (" . self::get_allnodesids($concept) . ") 
+    									ORDER BY d.ctime ASC", array()))
+    		|| ($records = array());    		
+    	}
     	
     	if (!in_array($timeframe, array('Y', 'M-Y'))) {
 
@@ -681,4 +696,33 @@ class Concepts {
     	}
     	return $dates;
     }
+    
+    public static function get_concepts_list($mapid, $cid=0, $level='') {
+    	global $concepts;
+    	
+    	if ($cid == 0) {    		
+    		$core = get_record('concepts', 'map', $mapid, 'parent', -1);
+    		$concepts[$core->id] = $level . $core->name;
+    		self::get_concepts_list($mapid, $core->id, $level . '_');
+    	}
+    	else {
+    		$conceptlist = get_records_select_array('concepts', 'parent = ? AND type = 1', array($cid), '', 'id, name');
+    		
+    		if ($conceptlist) {
+    			foreach ($conceptlist as $concept) {
+					$concepts[$concept->id] = $level . $concept->name;
+					self::get_concepts_list($mapid, $concept->id, $level . '_');
+				}
+    		} 
+    	}    	
+    	return $concepts;
+    }
+    
+    public static function get_free_fragments() {
+    	($records = get_records_sql_array('SELECT id, title, type, reflection
+    			FROM concept_example WHERE cid IS NULL ORDER BY id DESC', array())) 
+    	|| ($records = array());
+    	
+    	return $records;
+    }    
 }

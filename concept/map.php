@@ -49,6 +49,7 @@ $nodes = array(
 */
 
 $map = new ConceptMap($mapid);
+
 $records = Concepts::get_concepts($mapid);
 $jnodes = json_encode($records['concepts']);
 
@@ -159,7 +160,7 @@ $js = <<<EOF
 							dialogOpen(ECOTree.T_DEF);
 			    		},
 			    		'nexample': function(e) {
-							//@TODO ========================
+							dialogChoose(event_id);
 			    		},
 			    		'vexample': function(e) {
 			    			window.location.href = "{$wwwroot}concept/examples.php?id="+event_id;
@@ -203,6 +204,35 @@ $js = <<<EOF
 				});
 				
 				$('#cdialog').dialog('open');
+			}
+			
+			function dialogChoose(def_id) {
+				$('#edialog').load('free.php', function() { 
+  					$(this).dialog({ 
+						height: 350,
+						width: 320,
+    					modal:true, 
+    					buttons: { 
+    						"Add" : function() { 
+    							var db = $('.db:checked').map(function(i,n) {
+        							return $(n).val();
+    							}).get();
+    							
+    							$.post('process.php', 
+									{'db[]': db, 'def': def_id, 'map': $('#map').val()}, 
+									function (result) {
+                    					$('#edialog').dialog('close');
+                    					$('sample1').empty();
+                    					CreateTree(result);
+                    				}, 'json'
+                    			);
+    							
+    						}, 
+      						"Close": function() { $(this).dialog("close"); } 
+    					} 
+  					}); 
+				}) ;
+			
 			}
 			
 			function SearchTree() {
