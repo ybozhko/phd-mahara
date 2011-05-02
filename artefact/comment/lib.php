@@ -383,7 +383,11 @@ class ArtefactTypeComment extends ArtefactType {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static function last_public_comment($view=null, $artefact=null, $map=null, $example=null) {
+=======
+    public static function last_public_comment($view=null, $artefact=null) {
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
     public static function last_public_comment($view=null, $artefact=null) {
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
@@ -391,6 +395,7 @@ class ArtefactTypeComment extends ArtefactType {
             $where = 'c.onartefact = ?';
             $values = array($artefact);
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         else if (!empty($view)) {
             $where = 'c.onview = ?';
@@ -406,10 +411,15 @@ class ArtefactTypeComment extends ArtefactType {
             $values = array($example);
         }
 =======
+=======
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         else {
             $where = 'c.onview = ?';
             $values = array($view);
         }
+<<<<<<< HEAD
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
+=======
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         $newest = get_records_sql_array('
             SELECT a.id, a.ctime
@@ -437,7 +447,11 @@ class ArtefactTypeComment extends ArtefactType {
         }
         $authors = array();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $lastcomment = self::last_public_comment($data->view ? $data->view : null, $data->artefact ? $data->artefact : null, $data->map);
+=======
+        $lastcomment = self::last_public_comment($data->view, $data->artefact);
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
         $lastcomment = self::last_public_comment($data->view, $data->artefact);
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
@@ -518,7 +532,11 @@ class ArtefactTypeComment extends ArtefactType {
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         $extradata = $data->view ? array('view' => $data->view) : array('map' => $data->map);
+=======
+        $extradata = array('view' => $data->view);
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
         $extradata = array('view' => $data->view);
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
@@ -528,6 +546,7 @@ class ArtefactTypeComment extends ArtefactType {
             $data->baseurl = get_config('wwwroot') . 'view/artefact.php?view=' . $data->view . '&artefact=' . $data->artefact;
             $extradata['artefact'] = $data->artefact;
         }
+<<<<<<< HEAD
 <<<<<<< HEAD
         else if (!empty($data->view)) {
             $data->baseurl = get_config('wwwroot') . 'view/view.php?id=' . $data->view;
@@ -542,13 +561,21 @@ class ArtefactTypeComment extends ArtefactType {
         else {
             $data->baseurl = get_config('wwwroot') . 'view/view.php?id=' . $data->view;
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
+=======
+        else {
+            $data->baseurl = get_config('wwwroot') . 'view/view.php?id=' . $data->view;
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         }
 
         $smarty = smarty_core();
         $smarty->assign_by_ref('data', $data->data);
         $smarty->assign('canedit', $data->canedit);
 <<<<<<< HEAD
+<<<<<<< HEAD
         $data->view ? $smarty->assign('viewid', $data->view) : $smarty->assign('mapid', $data->map);
+=======
+        $smarty->assign('viewid', $data->view);
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
         $smarty->assign('viewid', $data->view);
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
@@ -687,8 +714,12 @@ class ArtefactTypeComment extends ArtefactType {
     
     public function get_map_url($mapid, $showcomment=true) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     	$page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
         $url = get_config('wwwroot') . 'concept/' . $page . '?id=' . $mapid;
+=======
+        $url = get_config('wwwroot') . 'concept/viewmap.php?id=' . $mapid;
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
         $url = get_config('wwwroot') . 'concept/viewmap.php?id=' . $mapid;
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
@@ -753,17 +784,23 @@ function make_public_validate(Pieform $form, $values) {
 
 function make_public_submit(Pieform $form, $values) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     global $SESSION, $USER, $view, $map;
 
     $comment = new ArtefactTypeComment((int) $values['comment']);
 
     $url = $view ? $comment->get_view_url($view->get('id')) : $comment->get_map_url($map->get('id'));
 =======
+=======
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
     global $SESSION, $USER, $view;
 
     $comment = new ArtefactTypeComment((int) $values['comment']);
 
     $url = $comment->get_view_url($view->get('id'));
+<<<<<<< HEAD
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
+=======
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 
     $author    = $comment->get('author');
@@ -1080,7 +1117,11 @@ function add_feedback_form_submit(Pieform $form, $values) {
     $data = (object) array(
         'commentid' => $comment->get('id'),
 <<<<<<< HEAD
+<<<<<<< HEAD
         'viewid'    => $view ? $view->get('id') : $map->get('id')
+=======
+        'viewid'    => $view->get('id')
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
         'viewid'    => $view->get('id')
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
@@ -1106,6 +1147,7 @@ function add_feedback_form_cancel_submit(Pieform $form) {
     global $view, $map;
     if ($view) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     	$form->reply(PIEFORM_OK, array(
         	'goto' => '/view/view.php?id=' . $view->get('id'),
     	));
@@ -1116,6 +1158,8 @@ function add_feedback_form_cancel_submit(Pieform $form) {
         	'goto' => '/concept/'. $page .'?id=' . $map->get('id'),
     	));    	
 =======
+=======
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
     $form->reply(PIEFORM_OK, array(
         'goto' => '/view/view.php?id=' . $view->get('id'),
     ));
@@ -1124,6 +1168,9 @@ function add_feedback_form_cancel_submit(Pieform $form) {
     $form->reply(PIEFORM_OK, array(
         'goto' => '/concept/viewmap.php?id=' . $map->get('id'),
     ));    	
+<<<<<<< HEAD
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
+=======
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
     }
 }

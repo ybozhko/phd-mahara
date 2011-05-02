@@ -27,7 +27,11 @@
         {strip}
         {foreach $item->attachments item=a name=attachments}
 <<<<<<< HEAD
+<<<<<<< HEAD
           {if $.foreach.attachments.first} | <span>{str tag=Attachments section=artefact.comment}:{else},{/if} <a href="{$WWWROOT}artefact/file/download.php?file={$a->attachid}&comment={$item->id}&{if $viewid}view={$viewid}{else}map={$mapid}{/if}">{$a->attachtitle}</a> ({$a->attachsize})</span>
+=======
+          {if $.foreach.attachments.first} | <span>{str tag=Attachments section=artefact.comment}:{else},{/if} <a href="{$WWWROOT}artefact/file/download.php?file={$a->attachid}&comment={$item->id}&view={$viewid}">{$a->attachtitle}</a> ({$a->attachsize})</span>
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 =======
           {if $.foreach.attachments.first} | <span>{str tag=Attachments section=artefact.comment}:{else},{/if} <a href="{$WWWROOT}artefact/file/download.php?file={$a->attachid}&comment={$item->id}&view={$viewid}">{$a->attachtitle}</a> ({$a->attachsize})</span>
 >>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae

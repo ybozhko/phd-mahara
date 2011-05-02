@@ -150,11 +150,7 @@ $artefact = null;
 $feedback = ArtefactTypeComment::get_comments($limit, $offset, $showcomment, $view, $artefact, $map);
 
 $smarty = smarty(
-<<<<<<< HEAD
 	array('paginator', 'mapfeedback', 'jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), 
-=======
-	array('paginator', 'viewmenu', 'jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), 
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 	$stylesheet,
 	array(),
 	array('stylesheets' => array('style/views.css'), 'sidebars' => false,)
@@ -222,9 +218,3 @@ if (isset($addfeedbackform)) {
 }
 
 $smarty->display('concept/timeline.tpl');
-
-<<<<<<< HEAD
-?>
-=======
-?>
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
