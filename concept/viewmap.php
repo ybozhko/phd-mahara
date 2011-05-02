@@ -142,16 +142,10 @@ $artefact = null;
 
 $feedback = ArtefactTypeComment::get_comments($limit, $offset, $showcomment, $view, $artefact, $map);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 //echo "<pre>";
 //	print_r($feedback);
 //echo "</pre>";
 
-=======
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
-=======
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 $stylesheet = array(
 				'<link rel="stylesheet" type="text/css" href="' . $wwwroot . 'theme/concept.css">',
 				'<link rel="stylesheet" type="text/css" href="' . $wwwroot . 'theme/jquery-ui.css">',
@@ -159,30 +153,14 @@ $stylesheet = array(
 			  );
 
 $smarty = smarty(
-<<<<<<< HEAD
-<<<<<<< HEAD
 	array('paginator', 'mapfeedback', 'artefact/resume/resumeshowhide.js', 'jquery', 'CTree', 'jquery-ui', 'jquery.jcrop'), 
-=======
-	array('paginator', 'viewmenu', 'artefact/resume/resumeshowhide.js', 'jquery', 'CTree', 'jquery-ui', 'jquery.jcrop'), 
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
-=======
-	array('paginator', 'viewmenu', 'artefact/resume/resumeshowhide.js', 'jquery', 'CTree', 'jquery-ui', 'jquery.jcrop'), 
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 	$stylesheet, 
 	array(), 
 	array('stylesheets' => array('style/views.css'), 'sidebars' => false,)
 );
 
 $javascript .= <<<EOF
-<<<<<<< HEAD
-<<<<<<< HEAD
 var mapid = {$mapid};
-=======
-var viewid = {$mapid};
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
-=======
-var viewid = {$mapid};
->>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 addLoadEvent(function () {
     paginator = {$feedback->pagination_js}
 });
