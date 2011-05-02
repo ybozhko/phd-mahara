@@ -1,0 +1,238 @@
+.maingroup {
+	position: absolute;
+	width: 980px;
+	height: 570px;
+	overflow: scroll;	
+}
+
+.maindiv {
+	position: relative;
+	width: 980px;
+	height: 570px;
+	overflow: scroll;
+}
+
+.econode {
+	position: absolute;
+	text-overflow: clip;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: xx-small;
+	padding: 2px;
+	line-height: 1;
+}
+
+a.ecolink:visited {
+	text-decoration: none;	
+	color: black;
+}
+
+a.ecolink:hover {
+	text-decoration: underline;
+}
+
+.concept-controls {
+    position: absolute;
+	right: 0;
+	top: 2px;
+	height: 16px;
+    width: 16px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    margin: 0;
+}
+
+.concept-controls a.btn-edit {
+	background: transparent url(raw/static/images/edit.gif) no-repeat left;
+}
+
+.concept-controls a.btn-del {
+	background: transparent url(raw/static/images/delete.gif) no-repeat left;
+
+}
+
+/*=========================Timeline================================*/
+.event{
+	float:left;
+	padding:4px;
+	text-align:left;
+	width:300px;
+	margin:0 5px 50px;
+}
+
+.eventList li{
+	background:#f9f9f9;
+	border:1px solid #EEEEEE;
+	list-style:none;
+	margin:5px;
+	padding:4px 7px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+}
+
+.eventList li:hover{
+	cursor:pointer;
+	background:#f3f3f3;
+	border:1px solid #D4E6EE;
+	color:#548DA5;
+}
+
+li span{
+	/* The event icon */
+	display:block;
+	float:left;
+	height:16px;
+	margin-right:5px;
+	width:16px;
+}
+
+li.blogpost span.icon { background:url(images/timeline/blogpost.png) no-repeat; }
+li.image span.icon { background:url(images/timeline/image.png) no-repeat; }
+li.file span.icon { background:url(images/timeline/file.png) no-repeat; }
+li.video span.icon { background:url(images/timeline/video.png) no-repeat; }
+li.audio span.icon { background:url(images/timeline/audio.png) no-repeat; }
+
+div.content{
+	display:none;
+}
+
+.eventHeading{
+	margin:-5px -5px 10px;
+	padding:2px 5px;
+	text-align:center;
+}
+
+.eventHeading.green{
+	background:#fafbf7 none repeat scroll 0 0;
+	border:1px solid #f3f7ec;
+	color: #1E6297;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+#timelineLimiter{
+	/*right width is calculated in timeline.js according 
+	to main-column-container width*/
+	width:758px; 
+	overflow:hidden;
+	padding-top:10px;
+	margin:20px 0;
+}
+
+#scroll{
+	display:none;
+	height:30px;
+
+	background:#F5F5F5;
+	border:1px solid #EEEEEE;
+	color:#999999;
+}
+
+.scrollPoints{
+	float:left;
+	font-size:1.4em;
+	padding:4px 10px;
+	text-align:center;
+	width:100px;
+	position:relative;
+	z-index:10;
+}
+
+#centered{
+	/* Centers the years, width is assigned by jQuery */
+	margin:0 auto;
+	position:relative;
+}
+
+#slider{
+	/* Holds the scroll bar */
+	margin:10px auto;
+	height:25px;
+	display:none;
+}
+
+#bar{
+	/* The scroll bar */
+	background:url(raw/static/images/slider_center.png) repeat-x center center;
+	height:25px;
+	cursor:pointer;
+}
+
+#barLeft{
+	background:transparent url(raw/static/images/slider.png) no-repeat scroll left center;
+	height:25px;
+	width:20px;
+	left:0;
+	top:0;
+	position:absolute;
+}
+
+#barRight{
+	background:transparent url(raw/static/images/slider.png) no-repeat scroll right center;
+	height:25px;
+	position:absolute;
+	right:0;
+	top:0;
+	width:20px;
+}
+
+#overlay{
+	/* The overlay that darkens the page when an event is clicked */
+	position:absolute;
+	z-index:10;
+	top:0;
+	left:0;
+	background-color:#222222;
+}
+
+#windowBox{
+	/* Shows details about the event on click */
+	position:absolute;
+	z-index:20;
+	background-color:#fcfcfc;
+	padding:10px;
+	border:2px solid #666666;
+	overflow:auto;
+}
+
+#titleDiv{
+	/* The title of the windowBox */
+	background:#F5F5F5;
+	border:1px solid #EEEEEE;
+	color:#AAAAAA;
+	font-size:1.5em;
+	margin-bottom:10px;
+	padding:5px 10px;
+}
+
+#date{
+	/* The date on the bottom of the windowBox */
+	bottom:20px;
+	color:#999999;
+	font-size:0.9em;
+	font-style:italic;
+}
+
+#highlight{
+	/* The blue highlight that moves with the scroll bar */
+	height:30px;
+	position:absolute;
+	z-index:0;
+	left:0;
+	top:0;
+	
+	background:#E7EFC5;
+	border:1px solid #E7EFC5;
+	border-width:0 1px;
+}
+
+.clear{
+	clear:both;
+}
+
+description{
+	color:#555555;
+	font-size:0.825em;
+	background: #fcfcfc;
+}
