@@ -382,11 +382,16 @@ class ArtefactTypeComment extends ArtefactType {
         }
     }
 
+<<<<<<< HEAD
     public static function last_public_comment($view=null, $artefact=null, $map=null, $example=null) {
+=======
+    public static function last_public_comment($view=null, $artefact=null) {
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         if (!empty($artefact)) {
             $where = 'c.onartefact = ?';
             $values = array($artefact);
         }
+<<<<<<< HEAD
         else if (!empty($view)) {
             $where = 'c.onview = ?';
             $values = array($view);
@@ -400,6 +405,12 @@ class ArtefactTypeComment extends ArtefactType {
         	$where = 'c.onexample = ?';
             $values = array($example);
         }
+=======
+        else {
+            $where = 'c.onview = ?';
+            $values = array($view);
+        }
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         $newest = get_records_sql_array('
             SELECT a.id, a.ctime
             FROM {artefact} a INNER JOIN {artefact_comment_comment} c ON a.id = c.artefact
@@ -425,7 +436,11 @@ class ArtefactTypeComment extends ArtefactType {
             $deletedmessage[$k] = get_string($v, 'artefact.comment');
         }
         $authors = array();
+<<<<<<< HEAD
         $lastcomment = self::last_public_comment($data->view ? $data->view : null, $data->artefact ? $data->artefact : null, $data->map);
+=======
+        $lastcomment = self::last_public_comment($data->view, $data->artefact);
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         $editableafter = time() - 60 * get_config_plugin('artefact', 'comment', 'commenteditabletime');
         foreach ($data->data as &$item) {
             $item->ts = strtotime($item->ctime);
@@ -502,13 +517,18 @@ class ArtefactTypeComment extends ArtefactType {
             }
         }
 
+<<<<<<< HEAD
         $extradata = $data->view ? array('view' => $data->view) : array('map' => $data->map);
+=======
+        $extradata = array('view' => $data->view);
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         $data->jsonscript = 'artefact/comment/comments.json.php';
 
         if (!empty($data->artefact)) {
             $data->baseurl = get_config('wwwroot') . 'view/artefact.php?view=' . $data->view . '&artefact=' . $data->artefact;
             $extradata['artefact'] = $data->artefact;
         }
+<<<<<<< HEAD
         else if (!empty($data->view)) {
             $data->baseurl = get_config('wwwroot') . 'view/view.php?id=' . $data->view;
         }
@@ -518,12 +538,20 @@ class ArtefactTypeComment extends ArtefactType {
         }
         else {
         	//comments on examples
+=======
+        else {
+            $data->baseurl = get_config('wwwroot') . 'view/view.php?id=' . $data->view;
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         }
 
         $smarty = smarty_core();
         $smarty->assign_by_ref('data', $data->data);
         $smarty->assign('canedit', $data->canedit);
+<<<<<<< HEAD
         $data->view ? $smarty->assign('viewid', $data->view) : $smarty->assign('mapid', $data->map);
+=======
+        $smarty->assign('viewid', $data->view);
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         $smarty->assign('baseurl', $data->baseurl);
         $data->tablerows = $smarty->fetch('artefact:comment:commentlist.tpl');
         $pagination = build_pagination(array(
@@ -658,8 +686,12 @@ class ArtefactTypeComment extends ArtefactType {
     }
     
     public function get_map_url($mapid, $showcomment=true) {
+<<<<<<< HEAD
     	$page = substr($_SERVER["SCRIPT_NAME"],strrpos($_SERVER["SCRIPT_NAME"],"/")+1);
         $url = get_config('wwwroot') . 'concept/' . $page . '?id=' . $mapid;
+=======
+        $url = get_config('wwwroot') . 'concept/viewmap.php?id=' . $mapid;
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
         return $url;
     }
     
@@ -720,11 +752,19 @@ function make_public_validate(Pieform $form, $values) {
 }
 
 function make_public_submit(Pieform $form, $values) {
+<<<<<<< HEAD
     global $SESSION, $USER, $view, $map;
 
     $comment = new ArtefactTypeComment((int) $values['comment']);
 
     $url = $view ? $comment->get_view_url($view->get('id')) : $comment->get_map_url($map->get('id'));
+=======
+    global $SESSION, $USER, $view;
+
+    $comment = new ArtefactTypeComment((int) $values['comment']);
+
+    $url = $comment->get_view_url($view->get('id'));
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
 
     $author    = $comment->get('author');
     $owner     = $comment->get('owner');
@@ -1039,7 +1079,11 @@ function add_feedback_form_submit(Pieform $form, $values) {
     require_once('activity.php');
     $data = (object) array(
         'commentid' => $comment->get('id'),
+<<<<<<< HEAD
         'viewid'    => $view ? $view->get('id') : $map->get('id')
+=======
+        'viewid'    => $view->get('id')
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
     );
     activity_occurred('feedback', $data, 'artefact', 'comment');
 
@@ -1061,6 +1105,7 @@ function add_feedback_form_submit(Pieform $form, $values) {
 function add_feedback_form_cancel_submit(Pieform $form) {
     global $view, $map;
     if ($view) {
+<<<<<<< HEAD
     	$form->reply(PIEFORM_OK, array(
         	'goto' => '/view/view.php?id=' . $view->get('id'),
     	));
@@ -1070,6 +1115,16 @@ function add_feedback_form_cancel_submit(Pieform $form) {
     	$form->reply(PIEFORM_OK, array(
         	'goto' => '/concept/'. $page .'?id=' . $map->get('id'),
     	));    	
+=======
+    $form->reply(PIEFORM_OK, array(
+        'goto' => '/view/view.php?id=' . $view->get('id'),
+    ));
+    }
+    else {
+    $form->reply(PIEFORM_OK, array(
+        'goto' => '/concept/viewmap.php?id=' . $map->get('id'),
+    ));    	
+>>>>>>> ab1cbffce703edd4d85aba96c1b0f1d8cbedb4ae
     }
 }
 
