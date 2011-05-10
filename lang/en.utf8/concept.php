@@ -29,6 +29,8 @@ defined('INTERNAL') || die();
 $string['pluginname'] = 'Concepts';
 
 $string['access'] = 'Map access: ';
+$string['accesslog'] = 'View Access History';
+$string['accesslogdsc'] = 'Access History: ';
 $string['addconcepts'] = 'Add concepts to map';
 $string['collapse'] = 'Collapse All';
 $string['conceptmap'] = 'Concept Map';

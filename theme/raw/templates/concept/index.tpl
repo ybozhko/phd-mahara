@@ -21,7 +21,9 @@
 					<br/>
                     	<label>{str tag="timeframe" section="concept"}</label> {$map->frames}
 					<br/>
-                    	<label>{str tag="access" section="concept"}</label><a href="{$WWWROOT}concept/access.php?map={$map->id}" id="editmapaccess">{str tag="editaccess" section="concept"}</a>
+                    	<label>{str tag="access" section="concept"}</label>
+                    		<a href="{$WWWROOT}concept/access.php?map={$map->id}" id="editmapaccess">{str tag="editaccess" section="concept"}</a> | 
+                    		<a href="{$WWWROOT}concept/history.php?map={$map->id}" id="editmapaccess"> {str tag="accesslog" section="concept"}</a>
                     
                     <div class="videsc">{$map->description}</div>
                     </div></td>
