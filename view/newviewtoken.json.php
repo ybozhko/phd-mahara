@@ -34,6 +34,7 @@ require_once(get_config('libroot') . 'view.php');
 if (!$USER->can_edit_view($view)) {
     json_reply(true, get_string('accessdenied', 'error'));
 }
+
 if (!$data = View::new_token(param_integer('view'))) {
     json_reply(true, get_string('createviewtokenfailed', 'view'));
 }

@@ -3,4 +3,3 @@
   <li{if $layout == 0} class="selected"{/if}><a href="{$WWWROOT}concept/viewtimeline.php?id={$id}">Timeline</a></li>
 </ul>
 
-

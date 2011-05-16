@@ -24,6 +24,7 @@
  * @copyright  (C) 2006-2009 Catalyst IT Ltd http://catalyst.net.nz
  *
  */
+
 /**
  * ===== Database trigger that is used for this functionality =====
  * DROP TRIGGER IF EXISTS before_delete_concept_access;

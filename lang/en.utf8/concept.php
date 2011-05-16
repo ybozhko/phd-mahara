@@ -27,7 +27,6 @@
 defined('INTERNAL') || die();
 
 $string['pluginname'] = 'Concepts';
-
 $string['access'] = 'Map access: ';
 $string['accesslog'] = 'View Access History';
 $string['accesslogdsc'] = 'Access History: ';
@@ -64,3 +63,4 @@ $string['switch'] = 'Switch to ';
 $string['timeframe'] = 'Custom time frames: ';
 $string['timeline'] = 'Timeline';
 $string['viewexample'] = 'View Examples';
+

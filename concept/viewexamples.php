@@ -40,9 +40,8 @@ $examples = Concepts::get_examples($cid);
 
 $num = count($examples) - 1;
 
-//$stylesheet = array('<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/jquery-ui.css">');
-
 $smarty = smarty(array('jquery', 'jquery-ui', 'jquery.jcrop')); 
+
 //$smarty->assign('INLINEJAVASCRIPT', $js);
 $smarty->assign('title', TITLE);
 $smarty->assign('examples', $examples);

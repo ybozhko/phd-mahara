@@ -2,6 +2,7 @@
 
 <h3>{$title}</h3>
 <div id="accordion">
+
 	{foreach from=$examples item=example name=smth}
 	<fieldset id='f_{$example->id}' class="collapsible">
 	<legend><a href='javascript:toggle_fieldset({$example->id});'>{$example->title}</a></legend>
