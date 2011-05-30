@@ -1533,6 +1533,16 @@ function get_concept_name($cid) {
 	}		
 }
 
+function check_extension($extension) {
+	$supported = array( 'bmp', 'jpeg', 'gif', 'png', 'jpg', 
+						'ogg', 'avi', 'mp4', 'mpeg', 'wmv', 'sgi', '3gp',
+						'txt');
+	if (in_array(strtolower($extension), $supported)) 
+		return true;
+	else
+		return false;
+}
+
 function get_fragment_form_elements($data = null, $user, $artefact, $extension = null, $blogpost = null) {
 	$elements = array();
 	
@@ -1553,7 +1563,7 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 		$list = array();
 	}
 	
-	if (in_array($extension, $images)) {
+	if (in_array(strtolower($extension), $images)) {
 		$elements['imageoptions'] = array(
 			'type'         => 'fieldset',
 			'collapsible'  => false,
@@ -1561,7 +1571,7 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 			'elements'     => array(
 				'cropbox'   => array(
 					'type'  => 'html',
-					'value' => "<img id='cropbox' src ='" . get_config('wwwroot') . "/artefact/file/download.php?file=". $artefact ."' width='600px'>",
+					'value' => "<img id='cropbox' src ='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' width='600px'>",
 					'description' => 'You can select an image fragment in a usual way: press the left mouse button, drag cursor, release the button.'
 				),
 				'complete' => array(                
@@ -1582,7 +1592,7 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 			'value' => 'image',
 		);
 		
-	} elseif (in_array($extension, $video)) {
+	} elseif (in_array(strtolower($extension), $video)) {
 		
 		$data ? $time = explode(',', $data->config) : $time = null;
 		
@@ -1594,7 +1604,7 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 				'video'   => array(
 					'type'  => 'html',
 					'value' => "<video id='video' controls autobuffer='true' width='600px'>
-    								<source src='" . get_config('wwwroot') . "/artefact/file/download.php?file=". $artefact ."' type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'>			
+    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'>			
 								</video>"
 				),
 				'start' => array(
@@ -1636,7 +1646,7 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 			'type' => 'hidden',
 			'value' => 'blogpost',
 		);
-	} elseif ($extension == 'txt') {
+	} elseif (strtolower($extension) == 'txt') {
 		$text = $data ? $data->config : '';
 		$elements['txtoptions'] = array(
 			'type'         => 'fieldset',
@@ -1681,6 +1691,19 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 				'description'  => 'Title of your example',
 				'defaultvalue' => $data ? $data->title : null,
 				'rules' 	   => array('required' => true),
+            ),
+            'cdate' => array(
+                'type'       => 'calendar',
+                'caloptions' => array(
+                    'showsTime'      => false,
+                    'ifFormat'       => '%Y/%m/%d'
+                    ),
+                'defaultvalue' => $data ? strtotime($data->cdate) : artefact_instance_from_id($artefact)->get('ctime'),
+                'title' => 'Fragment date',
+                'description' => get_string('dateformatguide'),
+                'rules' => array(
+                    'required' => true,
+                ),
             ),
 			'reflection' => array(
 				'type'         => 'textarea',

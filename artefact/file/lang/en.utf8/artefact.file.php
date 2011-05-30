@@ -113,6 +113,7 @@ $string['movefailed'] = 'Move failed.';
 $string['movingfailed'] = 'Moving failed: file or folder does not exist any more';
 $string['nametoolong'] = 'That name is too long.  Please choose a shorter one.';
 $string['nofilesfound'] = 'No files found';
+$string['nosupport'] = 'Fragments of files with this extension are not currently supported';
 $string['notpublishable'] = 'You do not have permission to publish this file';
 $string['overwrite'] = 'Overwrite';
 $string['Owner'] = 'Owner';

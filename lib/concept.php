@@ -649,25 +649,21 @@ class Concepts {
     
     public static function get_concepts_timeline($mapid, $timeframe, $concept=0) {
     	if ($concept == 0) {
-    		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, d.ctime 
+    		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, a.cdate 
     									FROM {concept_example} a 
     									INNER JOIN {concepts} b ON
     									b.id = a.cid
-    									INNER JOIN {artefact} d ON
-    									d.id = a.aid
     									WHERE b.map = ? 
-    									ORDER BY d.ctime ASC", array($mapid)))
+    									ORDER BY a.cdate ASC", array($mapid)))
     		|| ($records = array());
     	}
     	else {
-    		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, d.ctime 
+    		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, a.cdate 
     									FROM {concept_example} a 
     									INNER JOIN {concepts} b ON
     									b.id = a.cid
-    									INNER JOIN {artefact} d ON
-    									d.id = a.aid
     									WHERE b.id IN (" . self::get_allnodesids($concept) . ") 
-    									ORDER BY d.ctime ASC", array()))
+    									ORDER BY a.cdate ASC", array()))
     		|| ($records = array());    		
     	}
     	
@@ -680,7 +676,7 @@ class Concepts {
     			$e = strtotime($frame->end);
     			foreach($records as $record) { 
     				$record->concept = get_concept_name($record->cid);
-    				if (strtotime($record->ctime) >= $s && strtotime($record->ctime) <= $e) {
+    				if (strtotime($record->cdate) >= $s && strtotime($record->cdate) <= $e) {
     					$dates[$frame->name][] = $record;
     					unset($record);
     				}
@@ -691,7 +687,7 @@ class Concepts {
     		$dates = array();
     		foreach($records as $record) {
     			$record->concept = get_concept_name($record->cid);
-    			$dates[date($timeframe, strtotime($record->ctime))][] = $record;
+    			$dates[date($timeframe, strtotime($record->cdate))][] = $record;
     		}
     	}
     	return $dates;

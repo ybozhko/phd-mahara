@@ -30,6 +30,7 @@ define('SECTION_PLUGINTYPE', 'artefact');
 define('SECTION_PLUGINNAME', 'file');
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
+require_once('pieforms/pieform/elements/calendar.php');
 require_once('pieforms/pieform.php');
 safe_require('artefact', 'file');
 require_once('file.php');
@@ -49,15 +50,15 @@ else {
 	$data = get_record_select('concept_example', 'id = ?', array($id));
 	
 	$artefact = artefact_instance_from_id($aid);
-
+	
 	$elements = get_fragment_form_elements($data, $user, $aid, $artefact->get('oldextension'));
 	
 	$form = pieform(array(
     	'name' => 'editfragment',
     	'plugintype' => 'artefact',
     	'pluginname' => 'file',
-	    'jsform' => true,
-	    'renderer'   => 'table',
+	   	'jsform' => true,
+	   	'renderer'   => 'table',
     	'successcallback' => 'editfragment_submit',
     	'elements' => $elements,
 	)); 
@@ -110,10 +111,16 @@ EOF;
 		});
 EOF;
 }
+	
 	$smarty = smarty(array('jquery', 'jquery.jcrop', 'jquery-ui', 'jquery.select'), $stylesheets);
-	$smarty->assign('PAGEHEADING', 'Edit Fragment');
 	$smarty->assign_by_ref('form', $form);
 	$smarty->assign('INLINEJAVASCRIPT', $js);
+
+	if (!check_extension($artefact->get('oldextension'))) {
+		$smarty->assign('nosupport', get_string('nosupport', 'artefact.file'));
+	}
+	
+	$smarty->assign('PAGEHEADING', 'Edit Fragment');
 	$smarty->display('artefact:file:edit.tpl');
 } 
 
@@ -142,6 +149,7 @@ function editfragment_submit(Pieform $form, $values) {
 		'cid' => !empty($values['concept']) ? $values['concept'] : null,
     	'type' => $values['etype'],
 		'title' => $values['title'],
+    	'cdate' => db_format_timestamp($values['cdate']),
 		'reflection' =>  $values['reflection'],
 		'config' => $values['config'],
     	'complete' => $values['complete'],

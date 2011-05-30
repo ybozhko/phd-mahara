@@ -30,6 +30,7 @@
 							Free fragment
 						{/if}
 						</li>
+						<li><label>Fragment date: </label> {$fragment->cdate|date_format:"%d-%m-%Y"}</li>
 						<li><label>Fragment: </label> {$fragment->config|clean_html|safe}</li>
 						<li><label>Available for download: </label> {if $fragment->complete == 1} Yes {else} No {/if}</li>
 					</ul>
