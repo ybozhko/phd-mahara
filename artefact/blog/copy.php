@@ -17,27 +17,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package    mahara
- * @subpackage concepts
+ * @subpackage concept-map
  * @author     Yuliya Bozhko
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
  * @copyright  (C) 2011 Yuliya Bozhko, yuliya.bozhko@gmail.com
  *
  */
 define('INTERNAL', 1);
-define('MENUITEM', 'myportfolio/concept');
-
-define('SECTION_PLUGINTYPE', 'core');
-define('SECTION_PLUGINNAME', 'concept');
-define('SECTION_PAGE', 'index');
+define('PUBLIC', 1);
+define('MENUITEM', 'myportfolio/blogs');
+define('SECTION_PLUGINTYPE', 'artefact');
+define('SECTION_PLUGINNAME', 'blog');
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
-require_once(get_config('libroot') . 'pieforms/pieform.php');
-require_once('concept.php');
-define('TITLE', get_string('myconcepts', 'concept'));
 
-$data = get_timeframes();
+$id = param_integer('bid', 0);
+$aid = param_integer('id', 0);
 
-$smarty = smarty(); 
-$smarty->assign('frames', $data);
-$smarty->display('concept/timeframes/index.tpl');
+if($id != 0 && $aid != 0) {
+	copy_fragment($id, $aid);
+}
+
+function copy_fragment($id, $a) {
+    global $SESSION;
+    
+    db_begin();
+    $record = get_record('concept_example', 'id', $id);
+
+    $data = (object) array (
+    	'aid'  		 => $record->aid,
+    	'cid'  		 => null,
+    	'type' 	 	 => $record->type,
+    	'title' 	 => 'Copy of ' . $record->title,
+    	'cdate' 	 => $record->cdate,
+    	'reflection' => $record->reflection,
+    	'config' 	 => $record->config,
+    	'complete' 	 => $record->complete
+    );
+
+    $newrecord = insert_record('concept_example', $data, 'id', true);
+    db_commit();
+
+    $SESSION->add_ok_msg("Fragment successfully copied.");
+    redirect('/artefact/blog/edit.php?bid=' . $newrecord . '&id=' . $a);
+}
+
 ?>

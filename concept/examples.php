@@ -48,16 +48,18 @@ $num = count($examples) - 1;
 $js = <<<EOF
 	$(function(){
 		$("#accordion").find('img').each(function() {
-			var a = $(this).attr('alt').split(',');
-			$(this).Jcrop({
-				boxWidth: 600,
-				boxHeight: 400,
-				bgOpacity: 0.3,
-				setSelect: [a[0], a[1], a[2], a[3]],
-				allowResize: false,
-				allowMove: false,
-				allowSelect: false
-			});	
+			$(this).load(function() {
+				var a = $(this).attr('alt').split(',');
+				$(this).Jcrop({
+					boxWidth: 600,
+					boxHeight: 400,
+					bgOpacity: 0.3,
+					setSelect: [a[0], a[1], a[2], a[3]],
+					allowResize: false,
+					allowMove: false,
+					allowSelect: false
+				});	
+			});
 		});
 
     	function nothing(e) {
@@ -67,16 +69,16 @@ $js = <<<EOF
     	};
  	});
 
- 	$(document).ready(function() {
- 		$("#accordion").css({'overflow':'hidden', 'height':'0px'});
- 	});
+// 	$(document).ready(function() {
+// 		$("#accordion").css({'overflow':'hidden', 'height':'0px'});
+// 	});
  	
 	$(window).load(function(){
 		$("#accordion").accordion({
 			fillSpace: true, 
 			clearStyle: true
 		});
-		$("#accordion").css('height', '100%');
+		//$("#accordion").css('height', '100%');
 
 		$("#accordion").accordion({ active: $num });
 	});			
@@ -102,6 +104,21 @@ $js = <<<EOF
 	   		$('#playpause_' + id).val('Play');
 	  	}
 	};
+	
+	function rewriteTaskTitles() {
+    	forEach(
+        	getElementsByTagAndClassName('a', 'blog-title','blogtable'),
+        	function(element) {
+            	connect(element, 'onclick', function(e) {
+                	e.stop();
+                	var description = getFirstElementByTagAndClassName('div', 'blog-desc', element.parentNode);
+                	toggleElementClass('hidden', description);
+            	});
+        	}
+    	);
+	}
+
+	addLoadEvent(rewriteTaskTitles);
 EOF;
 
 $stylesheet = array('<link rel="stylesheet" type="text/css" href="' . get_config('wwwroot') . 'theme/jquery-ui.css">');

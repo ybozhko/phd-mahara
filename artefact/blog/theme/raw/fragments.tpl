@@ -1,6 +1,6 @@
 {include file="header.tpl"}
     <div class="rbuttons">
-        <a class="btn" href="{$WWWROOT}artefact/file/edit.php?id={$id}&new=1">New fragment</a>
+        <a class="btn" href="{$WWWROOT}artefact/blog/edit.php?id={$id}&new=1">New fragment</a>
     </div>
 {if !$fragments}
 	<div class="message">There are no fragments for this item yet.</div>
@@ -12,9 +12,9 @@
 			<td>
 				<div class="fr">
                 	<ul class="groupuserstatus">
-                   		<li><a href="{$WWWROOT}artefact/file/edit.php?fid={$fragment->id}&id={$id}" class="icon btn-edit">{str tag="edit"}</a></li>
-                    	<li><a href="{$WWWROOT}artefact/file/copy.php?fid={$fragment->id}&id={$id}" class="icon btn-copy">Copy</a></li>
-                    	<li><a href="{$WWWROOT}artefact/file/edit.php?delete={$fragment->id}&id={$id}" class="icon btn-del">{str tag="delete"}</a></li>
+                   		<li><a href="{$WWWROOT}artefact/blog/edit.php?bid={$fragment->id}&id={$id}" class="icon btn-edit">{str tag="edit"}</a></li>
+                    	<li><a href="{$WWWROOT}artefact/blog/copy.php?bid={$fragment->id}&id={$id}" class="icon btn-copy">Copy</a></li>
+                    	<li><a href="{$WWWROOT}artefact/blog/edit.php?delete={$fragment->id}&id={$id}" class="icon btn-del">{str tag="delete"}</a></li>
                 	</ul>
             	</div>
 
@@ -31,8 +31,7 @@
 						{/if}
 						</li>
 						<li><label>Fragment date: </label> {$fragment->cdate|date_format:"%d-%m-%Y"}</li>
-						<li><label>Fragment: </label> {$fragment->config|clean_html|safe}</li>
-						<li><label>Available for download: </label> {if $fragment->complete == 1} Yes {else} No {/if}</li>
+						<li><label>Blogpost(s): </label> {$fragment->config|clean_html|safe}</li>
 					</ul>
         		</div>
 			</td>

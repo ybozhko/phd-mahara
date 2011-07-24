@@ -422,6 +422,10 @@ abstract class ArtefactTypeFileBase extends ArtefactType {
                 'icon'         => ArtefactTypeFolder::get_icon(),
             );
         }
+        
+        foreach($filedata as $f) {
+        	$f->fragments = count_fragments_by_id($f->id);
+        }
 
         uasort($filedata, array("ArtefactTypeFileBase", "my_files_cmp"));
         return $filedata;

@@ -94,6 +94,21 @@ $js = <<<EOF
 	   		$('#playpause_' + id).val('Play');
 	  	}
 	};
+	
+	function rewriteTaskTitles() {
+    	forEach(
+        	getElementsByTagAndClassName('a', 'blog-title','blogtable'),
+        	function(element) {
+            	connect(element, 'onclick', function(e) {
+                	e.stop();
+                	var description = getFirstElementByTagAndClassName('div', 'blog-desc', element.parentNode);
+                	toggleElementClass('hidden', description);
+            	});
+        	}
+    	);
+	}
+
+	addLoadEvent(rewriteTaskTitles);
 EOF;
 
 $smarty = smarty(array('jquery', 'timeline', 'jquery-ui', 'jquery.jcrop'), $stylesheet); 

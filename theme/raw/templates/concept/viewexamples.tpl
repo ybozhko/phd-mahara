@@ -14,18 +14,31 @@
 			{assign var=time value=","|explode:$example->config} 
 			<td width='50%'>
 		  	<video id="video_{$example->id}" oncanplay="startVideo({$example->id}, {$time[0]})" ontimeupdate="stopVideo({$example->id}, {$time[0]}, {$time[1]})" autobuffer="true" width="400px" height="300px">
-    			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/ogg; codecs="theora, vorbis"'>
-    			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-    			<source src='{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}' type='video/3gpp; codecs="mp4v.20.8, samr"'>
+    			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/ogg'>
+    			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/webm'>
+    			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/mp4'>
+    			<source src='{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}' type='video/3gpp'>
+    			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/x-matroska'>
   			</video>
 			
   			<p><input type="button" value="Play" id="playpause_{$example->id}" onclick="playOrPause({$example->id})"></p>
   			<p><label>Fragment length: </label> {$time[1]-$time[0]}s</p>
   			</td>
+  		{elseif $example->type == 'blogpost'}
+  			<td width='50%'>
+  				<table id="blogtable" class="fullwidth listing">
+  				{foreach from=$example->config item=post}
+            		<tr class="{cycle values='r0,r1'}">
+                		<td class="c2"><a class="blog-title" href="javascript:;" onclick='javascript:toggle_visibility({$post->id});'>{$post->title} ({$post->ctime})</a>
+                		<div class="blog-desc hidden" id="blog-desc-{$post->id}">{$post->description|clean_html|safe}</div></td>
+            		</tr>
+        		{/foreach}
+  				</table>
+  			</td>
 		{elseif $example->type == 'file'}
 			<td width='50%'><i>{$example->config|clean_html|safe}</i></td>
 		{/if}
-		<td>
+		<td width='50%'>
 			<h4>Reflection</h4>
 			<p>{$example->reflection|clean_html|safe}</p>
 			{if $example->complete == 1}
@@ -100,5 +113,34 @@ function playOrPause(id) {
    		$('#playpause_' + id).val('Play');
   	}
 };
+
+function toggle_visibility(id) {
+	$("#blog-desc-" + id).addClass(function(index, currentClass) {
+		var addedClass;
+
+	    if (currentClass === "blog-desc hidden") {
+			$("#blog-desc-" + id).removeClass('hidden');
+	    }
+	    else {	    	
+	    	addedClass = "hidden";
+	    }  
+	    return addedClass;
+	 });
+}
+
+//function rewriteTaskTitles() {
+//	forEach(
+//    	getElementsByTagAndClassName('a', 'blog-title','blogtable'),
+//    	function(element) {
+//        	connect(element, 'onclick', function(e) {
+//            	e.stop();
+//            	var description = getFirstElementByTagAndClassName('div', 'blog-desc', element.parentNode);
+//            	toggleElementClass('hidden', description);
+//        	});
+//    	}
+//	);
+//}
+//
+//addLoadEvent(rewriteTaskTitles);
 {/literal}
 </script>

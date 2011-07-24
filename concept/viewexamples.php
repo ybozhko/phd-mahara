@@ -42,6 +42,10 @@ $num = count($examples) - 1;
 
 $smarty = smarty(array('jquery', 'jquery-ui', 'jquery.jcrop')); 
 
+//echo '<pre>';
+//print_r($examples);
+//echo '</pre>';
+
 //$smarty->assign('INLINEJAVASCRIPT', $js);
 $smarty->assign('title', TITLE);
 $smarty->assign('examples', $examples);

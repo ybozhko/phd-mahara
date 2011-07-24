@@ -1533,9 +1533,14 @@ function get_concept_name($cid) {
 	}		
 }
 
+function get_blogpost_name($pid) {
+	$record = get_record('artefact', 'id', $pid);
+	return $record->title . ' (' . $record->ctime . ')';
+}
+
 function check_extension($extension) {
-	$supported = array( 'bmp', 'jpeg', 'gif', 'png', 'jpg', 
-						'ogg', 'avi', 'mp4', 'mpeg', 'wmv', 'sgi', '3gp',
+	$supported = array( 'jpeg', 'gif', 'png', 'jpg', 
+						'ogv', 'ogg', 'mp4', 'mkv', '3gp', 'webm',
 						'txt');
 	if (in_array(strtolower($extension), $supported)) 
 		return true;
@@ -1543,11 +1548,17 @@ function check_extension($extension) {
 		return false;
 }
 
-function get_fragment_form_elements($data = null, $user, $artefact, $extension = null, $blogpost = null) {
-	$elements = array();
+function count_fragments_by_id($artefact) {
+	$count = count_records('concept_example','aid',$artefact);
 	
-	$images = array('bmp', 'jpeg', 'gif', 'png', 'jpg');
-	$video = array('ogg', 'avi', 'mp4', 'mpeg', 'wmv', 'sgi', '3gp');
+	return $count;
+}
+
+function get_fragment_form_elements($data = null, $user, $artefact = null, $extension = null, $blogpost = null) {
+	$elements = array();
+
+	$images = array('jpeg', 'gif', 'png', 'jpg');
+	$video = array('ogv', 'ogg', 'mkv', 'mp4', '3gp', 'webm');
 	
 	$conceptlist = get_records_sql_array("SELECT c.id 
 					FROM {concepts} c INNER JOIN {concept_maps} m ON m.id = c.map
@@ -1604,7 +1615,11 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 				'video'   => array(
 					'type'  => 'html',
 					'value' => "<video id='video' controls autobuffer='true' width='600px'>
-    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/mp4; codecs=\"avc1.42E01E, mp4a.40.2\"'>			
+    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/mp4'>
+    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/ogg'>			
+    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/x-matroska'>
+    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/3gpp'>
+    								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/webm'>
 								</video>"
 				),
 				'start' => array(
@@ -1640,8 +1655,40 @@ function get_fragment_form_elements($data = null, $user, $artefact, $extension =
 			'value' => 'video',
 		);
 	} elseif (isset($blogpost)) {
-		//@TODO: SELECT PART OF THE BLOGPOST
+		$postslist = get_records_sql_array("SELECT a.id
+            FROM {artefact} a
+            LEFT JOIN {artefact_blog_blogpost} bp ON a.id = bp.blogpost
+            WHERE a.parent = ?
+            AND bp.published = 1", array($artefact));
 		
+		if ($postslist) {
+			foreach ($postslist as $post) {
+				$plist[$post->id] = get_blogpost_name($post->id);
+			}
+		}
+		else {
+			$plist = array();
+		}
+
+		$data ? $posts = explode(',', $data->config) : $posts = null;
+		
+		$elements['blogoptions'] = array(
+			'type'         => 'fieldset',
+			'collapsible'  => false,
+			'legend'	   => 'Step 1. Select posts',
+			'elements'	   => array(
+				'posts'	   => array(
+					'type'         => 'select',
+					'title'        => 'Posts',
+					'multiple'	   => true,
+					'description'  => 'Select post(s) related to this example',
+					'defaultvalue' => $data ? $posts : '',
+					'options'      => $plist,	
+					'rules'        => array('required' => true),				
+				),
+			),			
+		);
+
 		$elements['etype'] = array(                
 			'type' => 'hidden',
 			'value' => 'blogpost',

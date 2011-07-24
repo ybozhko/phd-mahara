@@ -1942,12 +1942,12 @@ function mahara_standard_nav() {
             'weight' => 70,
             'ignore' => !$exportenabled,
         ),
-        array(
-            'path' => 'myportfolio/collection',
-            'url' => 'collection/',
-            'title' => get_string('mycollections', 'collection'),
-            'weight' => 10,
-        ),
+//        array(
+//            'path' => 'myportfolio/collection',
+//            'url' => 'collection/',
+//            'title' => get_string('mycollections', 'collection'),
+//            'weight' => 10,
+//        ),
         array(
             'path' => 'myportfolio/concept',
             'url' => 'concept/',

@@ -125,7 +125,26 @@ $js = <<<EOF
 	   		$('#playpause_' + id).val('Play');
 	  	}
 	};
+	
+	function rewriteTaskTitles() {
+    	forEach(
+        	getElementsByTagAndClassName('a', 'blog-title','blogtable'),
+        	function(element) {
+            	connect(element, 'onclick', function(e) {
+                	e.stop();
+                	var description = getFirstElementByTagAndClassName('div', 'blog-desc', element.parentNode);
+                	toggleElementClass('hidden', description);
+            	});
+        	}
+    	);
+	}
+
+	addLoadEvent(rewriteTaskTitles);
 EOF;
+
+//echo '<pre>';
+//print_r($data);
+//echo '</pre>';
 
 // Create the "make feedback private form" now if it's been submitted
 if (param_variable('make_public_submit', null)) {
@@ -206,6 +225,7 @@ $smarty->assign('PAGETITLE', strip_tags($map->display_title()));
 $smarty->assign('examples', $data);
 $smarty->assign('id', $mapid);
 $smarty->assign('map', $map);
+$smarty->assign('mapdescription', $map->get('description'));
 $smarty->assign('layout', 0);
 $smarty->assign('tf', $tf);
 $smarty->assign('concepts', $concepts);

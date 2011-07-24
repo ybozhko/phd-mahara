@@ -286,6 +286,10 @@ class ArtefactTypeBlog extends ArtefactType {
          GROUP BY b.id, b.title, b.description, b.locked
          ORDER BY b.title", array($USER->get('id')), $offset, $limit))
             || ($result = array());
+		
+        foreach($result as $r) {
+        	$r->fragments = count_fragments_by_id($r->id);
+        }
 
         $count = (int)get_field('artefact', 'COUNT(*)', 'owner', $USER->get('id'), 'artefacttype', 'blog');
 

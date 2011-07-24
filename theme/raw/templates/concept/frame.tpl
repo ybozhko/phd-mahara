@@ -15,14 +15,16 @@
 								<tr><td colspan='2'><label>Concept: </label>{$event->concept}</td></tr>
 								<tr>
 								{if $event->type == 'image'}
-									<td width='50%'><img id='cropbox_{$event->id}' alt='{$event->config}' src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}' width='600px'/></td>
+									<td width='50%'><img id='cropbox_{$event->id}' alt='{$event->config}' src='{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}' width='600px'/></td>
 								{elseif $event->type == 'video'}
 									{assign var=time value=","|explode:$event->config} 
 									<td width='50%'>
 								  	<video id="video_{$event->id}" oncanplay="startVideo({$event->id}, {$time[0]})" ontimeupdate="stopVideo({$event->id}, {$time[0]}, {$time[1]})" autobuffer="true" width="400px" height="300px">
-						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}" type='video/ogg; codecs="theora, vorbis"'>
-						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-						    			<source src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}' type='video/3gpp; codecs="mp4v.20.8, samr"'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/ogg'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/mp4'>
+						    			<source src='{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}' type='video/3gpp'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/webm'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/x-matroska'>
 						  			</video>
 									
 						  			<p><input type="button" value="Play" id="playpause_{$event->id}" onclick="playOrPause({$event->id})"></p>

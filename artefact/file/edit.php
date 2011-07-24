@@ -94,8 +94,6 @@ if ($artefact->get('artefacttype') == 'image') {
 				$('#editfragment_config').val(c.x + ',' + c.y + ',' + c.x2 + ',' + c.y2);
 			};
 EOF;
-} elseif ($artefact->get('artefacttype') == 'blogpost') {
-	
 } elseif ($artefact->get('artefacttype') == 'file' & $artefact->get('oldextension') == 'txt') {
 	$path = get_config('wwwroot') . 'artefact/file/download.php?file=' . $aid;
 	$js = <<<EOF

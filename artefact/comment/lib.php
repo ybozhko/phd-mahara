@@ -1125,7 +1125,7 @@ class ActivityTypeArtefactCommentFeedback extends ActivityTypePlugin {
             }
         }
         else if ($onmap = $comment->get('onmap')) { //feedback on map
-            if (!$viewrecord = get_record('map', 'id', $onmap)) {
+            if (!$viewrecord = get_record('concept_maps', 'id', $onmap)) {
                 throw new MapNotFoundException(get_string('mapnotfound', 'error', $onmap));
             }
             $userid = $viewrecord->owner;

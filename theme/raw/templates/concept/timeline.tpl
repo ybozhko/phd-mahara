@@ -11,6 +11,8 @@
 </div>
 {/if}
 
+<p id="map-description">{$mapdescription|clean_html|safe}</p>
+
   	<br>
   	<label>Select time frame</label>
   	<select onchange="changeTimeFrame($(this).val());" id='timeframes'>
@@ -51,14 +53,27 @@
 									{assign var=time value=","|explode:$event->config} 
 									<td width='50%'>
 								  	<video id="video_{$event->id}" oncanplay="startVideo({$event->id}, {$time[0]})" ontimeupdate="stopVideo({$event->id}, {$time[0]}, {$time[1]})" autobuffer="true" width="400px" height="300px">
-						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}" type='video/ogg; codecs="theora, vorbis"'>
-						    			<source src="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'>
-						    			<source src='{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}' type='video/3gpp; codecs="mp4v.20.8, samr"'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/ogg'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/webm'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/mp4'>
+						    			<source src='{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}' type='video/3gpp'>
+						    			<source src="{$WWWROOT}artefact/file/download.php?file={$event->aid}&map={$id}" type='video/x-matroska'>
 						  			</video>
 									
 						  			<p><input type="button" value="Play" id="playpause_{$event->id}" onclick="playOrPause({$event->id})"></p>
 						  			<p><label>Fragment length: </label> {$time[1]-$time[0]}s</p>
 						  			</td>
+  								{elseif $event->type == 'blogpost'}
+  									<td width='50%'>
+  										<table id="blogtable" class="fullwidth listing">
+  										{foreach from=$event->config item=post}
+            								<tr class="{cycle values='r0,r1'}">
+                								<td class="c2"><a class="blog-title" href="">{$post->title} ({$post->ctime})</a>
+                								<div class="blog-desc hidden" id="blog-desc-{$post->id}">{$post->description|clean_html|safe}</div></td>
+            								</tr>
+        								{/foreach}
+  										</table>
+  									</td>
 								{elseif $event->type == 'file'}
 									<td width='50%'><i>{$event->config|clean_html|safe}</i></td>
 								{/if}
@@ -68,7 +83,7 @@
 									{if $event->complete == 1}
 										<p><a href="{$WWWROOT}/artefact/file/download.php?file={$event->aid}&map={$id}">Download entire file</a></p>
 									{/if}
-									<p id="date">{$event->ctime|date_format:"%d-%m-%Y"}</p>
+									<p id="date">{$event->cdate|date_format:"%d-%m-%Y"}</p>
 								</td></tr>
 							</table> 						
 							

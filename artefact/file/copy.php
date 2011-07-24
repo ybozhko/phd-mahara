@@ -37,7 +37,6 @@ $id = param_integer('fid', 0);
 $aid = param_integer('id', 0);
 
 if($id != 0 && $aid != 0) {
-	echo 1;
 	copy_fragment($id, $aid);
 }
 
@@ -46,20 +45,21 @@ function copy_fragment($id, $a) {
     
     db_begin();
     $record = get_record('concept_example', 'id', $id);
-    echo 2;
+
     $data = (object) array (
     	'aid'  		 => $record->aid,
     	'cid'  		 => null,
     	'type' 	 	 => $record->type,
     	'title' 	 => 'Copy of ' . $record->title,
+    	'cdate' 	 => $record->cdate,
     	'reflection' => $record->reflection,
     	'config' 	 => $record->config,
     	'complete' 	 => $record->complete
     );
-    echo 3;
+
     $newrecord = insert_record('concept_example', $data, 'id', true);
     db_commit();
-    echo 4;
+
     $SESSION->add_ok_msg("Fragment successfully copied.");
     redirect('/artefact/file/edit.php?fid=' . $newrecord . '&id=' . $a);
 }

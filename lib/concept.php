@@ -90,25 +90,48 @@ class ConceptMap {
         throw new InvalidArgumentException("Field $field wasn't found in class " . get_class($this));
     }    
 
-    public static function save($data) {
+    public static function save($data) {    	
+    	$frames = $data['timeframes'];
+    	unset($data['timeframes']);
+
         $map = new ConceptMap(0, $data);
         $map->commit();
+        
+        self::set_timeframes($map, $frames);
 
         return $map;    	
+    }
+    
+    public static function set_timeframes($map, $frames) {
+    	db_begin();
+
+    	delete_records('concept_map_timeframe','map',$map->get('id'));
+    	foreach ($frames as $f) {
+    		if(!empty($f)) {
+    			execute_sql('INSERT INTO {concept_map_timeframe} VALUES (?, ?)', array($map->get('id'), $f));
+    		}
+    	}
+    	
+    	db_commit();
     }
     
     public function delete() {
         db_begin();
 
-        //@TODO: delete all examples!!!
+        $todelete = get_records_array('concepts','map', $this->id);
+        
+        foreach($todelete as $del) {
+        	execute_sql('UPDATE {concept_example} SET cid = NULL WHERE cid = ?', array($del->id));
+        }
+        
         delete_records('concepts', 'map', $this->id);
+        delete_records('concept_map_timeframe', 'map', $this->id);
         delete_records('concept_maps', 'id', $this->id);
 
         db_commit();    
     }
     
     public function commit() {
-
         $fordb = new StdClass;
         foreach (get_object_vars($this) as $k => $v) {
             $fordb->{$k} = $v;
@@ -118,7 +141,7 @@ class ConceptMap {
         }
 
         db_begin();
-
+		
         // if id is not empty we are editing an existing map
         if (!empty($this->id)) {
             update_record('concept_maps', $fordb, 'id');
@@ -236,7 +259,6 @@ class ConceptMap {
              * - Don't insert records with stopdate in the past
              * - Remove startdates that are in the past
              * - If view allows comments, access record comment permissions, don't apply, so reset them.
-             * @todo: merge overlapping date ranges.
              */
             $accessdata_added = array();
             $time = time();
@@ -418,7 +440,7 @@ class ConceptMap {
             || ($data = array());
 
         foreach($data as $elem) {
-        	$elem->frames = implode(',', array_keys(get_records_sql_menu('SELECT t.name FROM {concept_timeframe} t 
+        	$elem->frames = implode(', ', array_keys(get_records_sql_menu('SELECT t.name FROM {concept_timeframe} t 
 							INNER JOIN {concept_map_timeframe} m on m.timeframe=t.id WHERE m.map = ? ', array($elem->id))));
         }   
          
@@ -440,7 +462,21 @@ class ConceptMap {
     * @return array $elements
     */
     public static function get_mapform_elements($data=null) {
-        $elements = array(
+    	global $USER;
+    	
+        $options = get_records_sql_array("SELECT id, name FROM {concept_timeframe} WHERE uid = ? AND parent = 0", 
+        			array($USER->get('id')));
+        
+    	if ($options) {
+			foreach ($options as $option) {
+				$timeframes[$option->id] =$option->name;
+			}
+		}
+		else {
+			$timeframes = array();
+		}
+        			
+    	$elements = array(
             'name' => array(
                 'type' => 'text',
                 'defaultvalue' => null,
@@ -458,6 +494,14 @@ class ConceptMap {
                 'defaultvalue' => null,
                 'title' => get_string('description', 'concept'),
             ),
+            'timeframes' => array(
+            	'type' => 'select',
+            	'multiple' => true,
+            	'options' => array('' => 'None') + $timeframes,
+            	'title' => 'Select timeframes',
+            	'description' => 'Press and hold SHIFT to select multiple values',
+            	'defaultvalue' => ''            
+            )
         );
 
         // populate the fields with the existing values if any
@@ -473,6 +517,8 @@ class ConceptMap {
                 'type' => 'hidden',
                 'value' => $data->owner,
             );
+            $default = array_keys(get_records_sql_menu("SELECT timeframe FROM {concept_map_timeframe} WHERE map = ?", array($data->id)));
+            $elements['timeframes']['defaultvalue'] = $default ? $default : '';
         }
 
         return $elements;    	
@@ -634,6 +680,14 @@ class Concepts {
     									FROM {concept_example} e 
     									INNER JOIN {artefact} a ON a.id = e.aid
     									WHERE e.cid IN (" . $idlist . ") ORDER BY a.ctime DESC", array());
+    	
+    	foreach($examples as $e) {
+    		if($e->type == 'blogpost') {
+    			$posts = $e->config;
+    			$e->config = get_records_sql_array("SELECT title, ctime, description, id FROM {artefact} WHERE id IN (". $posts .")", array());
+    		}
+    	}
+    	
 		return $examples;
     }
 
@@ -656,6 +710,13 @@ class Concepts {
     									WHERE b.map = ? 
     									ORDER BY a.cdate ASC", array($mapid)))
     		|| ($records = array());
+    		
+    	    foreach($records as $e) {
+    			if($e->type == 'blogpost') {
+    				$posts = $e->config;
+    				$e->config = get_records_sql_array("SELECT title, ctime, description, id FROM {artefact} WHERE id IN (". $posts .")", array());
+    			}
+    		}    		
     	}
     	else {
     		($records = get_records_sql_array("SELECT a.id, a.aid, a.cid, '' as concept, a.title, a.reflection, a.config, a.type, a.complete, a.cdate 
@@ -664,7 +725,14 @@ class Concepts {
     									b.id = a.cid
     									WHERE b.id IN (" . self::get_allnodesids($concept) . ") 
     									ORDER BY a.cdate ASC", array()))
-    		|| ($records = array());    		
+    		|| ($records = array());
+    	    
+    		foreach($records as $e) {
+    			if($e->type == 'blogpost') {
+    				$posts = $e->config;
+    				$e->config = get_records_sql_array("SELECT title, ctime, description, id FROM {artefact} WHERE id IN (". $posts .")", array());
+    			}
+    		}    		
     	}
     	
     	if (!in_array($timeframe, array('Y', 'M-Y'))) {
@@ -716,9 +784,75 @@ class Concepts {
     
     public static function get_free_fragments() {
     	($records = get_records_sql_array('SELECT id, title, type, reflection
-    			FROM concept_example WHERE cid IS NULL ORDER BY id DESC', array())) 
+    			FROM {concept_example} WHERE cid IS NULL ORDER BY id DESC', array())) 
     	|| ($records = array());
     	
     	return $records;
     }    
 }
+
+    function get_timeframes() {
+		global $USER;
+		
+		$tfs = get_records_sql_array("SELECT id, name FROM {concept_timeframe} WHERE parent = 0 AND uid = ?", 
+					array($USER->get('id')));
+    	
+		if(!empty($tfs)) {
+			foreach($tfs as $tf) {
+				$frames[] = array(
+					'id' => $tf->id,
+					'name' => $tf->name,
+					'fs' => get_records_array('concept_timeframe', 'parent', $tf->id, 'start ASC', 'name, start, end'),
+					'used' => get_records_sql_array('SELECT b.name, b.id 
+								FROM {concept_map_timeframe} a 
+								INNER JOIN {concept_maps} b ON a.map = b.id WHERE a.timeframe = ?', 
+								array($tf->id)),
+				);
+			}
+		}		
+		return $frames;			
+    }
+    
+    function save_timeframes($data, $new = 0) {
+    	global $USER;
+
+		db_begin();
+		$id = $data['id'];
+        if ($new == 0) { 
+            $obj = (object)array(
+            	'id' => $id,
+            	'uid' => $USER->get('id'),
+            	'name' => $data['name'],
+            	'parent' => 0,
+         		'start' => null,
+        		'end' => null
+        	);
+            update_record('concept_timeframe', $obj, array('id' => $id));
+        }
+        else {
+            $obj = (object)array(
+            	'uid' => $USER->get('id'),
+            	'name' => $data['name'],
+            	'parent' => 0,
+         		'start' => null,
+        		'end' => null
+        	);      
+        	$id = insert_record('concept_timeframe', $obj, 'id', true);      
+        }
+
+        delete_records('concept_timeframe', 'parent', $id);
+        $frames = explode("\n", $data['timeframes']);
+
+        foreach($frames as $frame) {
+        	$text = explode(';', $frame);
+        	$f = (object) array(
+            	'uid' => $USER->get('id'),
+            	'name' => $text[2],
+            	'parent' => $id,
+         		'start' => $text[0],
+        		'end' => $text[1]
+        	);
+        	insert_record('concept_timeframe', $f, 'id');
+        }
+    	db_commit();
+    }

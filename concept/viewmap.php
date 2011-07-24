@@ -204,6 +204,7 @@ $smarty->assign('PAGETITLE', strip_tags($map->display_title()));
 $smarty->assign('INLINEJAVASCRIPT', $javascript);
 $smarty->assign('feedback', $feedback);
 $smarty->assign('map', $map);
+$smarty->assign('mapdescription', $map->get('description'));
 $smarty->assign('id', $mapid);
 $smarty->assign('layout', 1);
 
