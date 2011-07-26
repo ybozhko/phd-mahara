@@ -2,7 +2,7 @@
     <div class="rbuttons">
         <a class="btn" href="{$WWWROOT}concept/timeframes/edit.php?new=1">New Timeframe</a>
     </div>
-<p>On this page you can manage you custom timeframes that can be used in the timeline</p>
+<p>On this page you can manage your custom timeframes that can be used in the timeline</p>
 {if $frames}
 <table class="fullwidth listing">
 	<tbody>

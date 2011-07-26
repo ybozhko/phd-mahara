@@ -1554,12 +1554,7 @@ function count_fragments_by_id($artefact) {
 	return $count;
 }
 
-function get_fragment_form_elements($data = null, $user, $artefact = null, $extension = null, $blogpost = null) {
-	$elements = array();
-
-	$images = array('jpeg', 'gif', 'png', 'jpg');
-	$video = array('ogv', 'ogg', 'mkv', 'mp4', '3gp', 'webm');
-	
+function get_concept_list_by_user($user){
 	$conceptlist = get_records_sql_array("SELECT c.id 
 					FROM {concepts} c INNER JOIN {concept_maps} m ON m.id = c.map
 					WHERE m.owner = ? AND c.type = 0 ORDER BY id ASC
@@ -1573,6 +1568,17 @@ function get_fragment_form_elements($data = null, $user, $artefact = null, $exte
 	else {
 		$list = array();
 	}
+	
+	return $list;
+}
+
+function get_fragment_form_elements($data = null, $user, $artefact = null, $extension = null, $blogpost = null) {
+	$elements = array();
+
+	$images = array('jpeg', 'gif', 'png', 'jpg');
+	$video = array('ogv', 'ogg', 'mkv', 'mp4', '3gp', 'webm');
+	
+	$list = get_concept_list_by_user($user);
 	
 	if (in_array(strtolower($extension), $images)) {
 		$elements['imageoptions'] = array(

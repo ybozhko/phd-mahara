@@ -856,3 +856,19 @@ class Concepts {
         }
     	db_commit();
     }
+    
+    function get_bookmarks() {    	
+    	($bookmarks = get_records_array('artefact', 'artefacttype', 'bookmark')) || ($bookmarks = array());
+
+    	if(!empty($bookmarks))
+    		foreach($bookmarks as $b) {
+    			($examples = get_records_array('concept_example','aid', $b->id, 'cdate ASC')) || ($examples = array());
+    			if(!empty($examples)) 
+    				foreach($examples as $e)  
+    					$e->cid ? $e->config = get_concept_name($e->cid) : $e->config = 'None';
+    			$b->container = $examples;
+    			$b->parent = count($examples);
+    		}
+
+    	return $bookmarks;
+    }

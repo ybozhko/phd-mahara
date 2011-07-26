@@ -64,3 +64,4 @@ $string['timeframe'] = 'Custom time frames: ';
 $string['timeline'] = 'Timeline';
 $string['viewexample'] = 'View Examples';
 
+$string['bookmark'] = 'My Bookmarks';

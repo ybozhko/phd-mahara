@@ -1955,6 +1955,12 @@ function mahara_standard_nav() {
             'weight' => 20,
         ),
         array(
+            'path' => 'myportfolio/bookmark',
+            'url' => 'concept/bookmark/',
+            'title' => get_string('bookmark', 'concept'),
+            'weight' => 30,
+        ),
+        array(
             'path' => 'groups',
             'url' => 'group/mygroups.php',
             'title' => get_string('groups'),

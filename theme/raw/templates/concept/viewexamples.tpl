@@ -127,20 +127,5 @@ function toggle_visibility(id) {
 	    return addedClass;
 	 });
 }
-
-//function rewriteTaskTitles() {
-//	forEach(
-//    	getElementsByTagAndClassName('a', 'blog-title','blogtable'),
-//    	function(element) {
-//        	connect(element, 'onclick', function(e) {
-//            	e.stop();
-//            	var description = getFirstElementByTagAndClassName('div', 'blog-desc', element.parentNode);
-//            	toggleElementClass('hidden', description);
-//        	});
-//    	}
-//	);
-//}
-//
-//addLoadEvent(rewriteTaskTitles);
 {/literal}
 </script>
