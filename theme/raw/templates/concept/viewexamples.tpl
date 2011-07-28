@@ -35,6 +35,14 @@
         		{/foreach}
   				</table>
   			</td>
+  		{elseif $example->type == 'bookmark'}
+  			<td width='50%'>
+  				<table>
+  					<tr><td><a href='{$example->config->title}'>{$example->config->title}</a></td></tr>
+  					<tr><td><strong>Last Accessed:</strong> {$example->config->note|date_format:"%d-%m-%Y"}</td></tr>
+  					<tr><td>{$example->config->description|clean_html|safe}</td></tr>
+  				</table>
+  			</td>
 		{elseif $example->type == 'file'}
 			<td width='50%'><i>{$example->config|clean_html|safe}</i></td>
 		{/if}

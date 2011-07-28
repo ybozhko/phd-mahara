@@ -74,6 +74,14 @@
         								{/foreach}
   										</table>
   									</td>
+  								{elseif $event->type == 'bookmark'}
+						  			<td width='50%'>
+						  				<table>
+						  					<tr><td><a href='{$event->config->title}'>{$event->config->title}</a></td></tr>
+						  					<tr><td><strong>Last Accessed:</strong> {$event->config->note|date_format:"%d-%m-%Y"}</td></tr>
+						  					<tr><td>{$event->config->description|clean_html|safe}</td></tr>
+						  				</table>
+						  			</td>
 								{elseif $event->type == 'file'}
 									<td width='50%'><i>{$event->config|clean_html|safe}</i></td>
 								{/if}

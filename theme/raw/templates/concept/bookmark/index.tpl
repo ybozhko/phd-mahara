@@ -11,12 +11,12 @@
 		    <div class="fr">
                 <ul class="groupuserstatus">
                     <li><a href="{$WWWROOT}concept/bookmark/edit.php?id={$b->id}" class="icon btn-edit">{str tag="edit"}</a></li>
-                    <li><a href="{$WWWROOT}concept/bookmark/edit.php?del={$b->id}" class="icon btn-del">{str tag="delete"}</a></li>
+                    <li><a href="{$WWWROOT}concept/bookmark/edit.php?delete={$b->id}" class="icon btn-del">{str tag="delete"}</a></li>
                 </ul>
             </div>
 		<h3><a href='{$b->title}'>{$b->title}</a></h3></td></tr>
 		<tr><td>{$b->description|clean_html|safe}</td></tr>
-		<tr><td><strong>Last accessed: </strong>{$b->note}</td></tr>
+		<tr><td><strong>Last accessed: </strong>{$b->note|date_format:"%d-%m-%Y"}</td></tr>
 		<tr><td>
 			<input type="submit" onclick="javascript:toggle_visibility('examplestable-{$b->id}');" class="icon btn-fragments s" value="Fragments({$b->parent})" />
 			<a href='javascript:;' id='new-{$b->id}' class='btn-add s' onclick='javascript:showhide_form("show",{$b->id});'>New Fragment</a>
@@ -29,7 +29,7 @@
 					<td>{$f->cdate|date_format:"%d-%m-%Y"}</td>
 					<td>{$f->title}<a href='javascript:;' onclick='javascript:toggle_visibility("reflection-{$f->id}");'>[+]</a></td>
 					<td>{$f->config}</td>
-					<td width='50px'><a href="{$WWWROOT}concept/bookmark/edit.php?id={$f->id}" class="icon btn-edit s">{str tag="edit"}</a></td>
+					<td width='50px'><a href="{$WWWROOT}concept/bookmark/edit.php?edit={$f->id}&id={$f->aid}" class="icon btn-edit s">{str tag="edit"}</a></td>
 					<td width='50px'><a href="{$WWWROOT}concept/bookmark/edit.php?delete={$f->id}&id={$f->aid}" class="icon btn-del s">{str tag="delete"}</a></td>
 				</tr>
 				<tr><td colspan='5' id='reflection-{$f->id}' class='hidden'>{$f->reflection}</td></tr>

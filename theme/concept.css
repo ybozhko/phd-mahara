@@ -88,6 +88,7 @@ li span{
 }
 
 li.blogpost span.icon { background:url(images/timeline/blogpost.png) no-repeat; }
+li.bookmark span.icon { background:url(images/timeline/bookmark.png) no-repeat; }
 li.image span.icon { background:url(images/timeline/image.png) no-repeat; }
 li.file span.icon { background:url(images/timeline/file.png) no-repeat; }
 li.video span.icon { background:url(images/timeline/video.png) no-repeat; }

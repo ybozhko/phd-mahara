@@ -52,18 +52,18 @@ else {
 	$elements = get_fragment_form_elements($data, $user, $aid, null, true);
 
 	$form = pieform(array(
-    	'name'            => 'editfragmentblog',
-	'method'             => 'post',
+    	'name'            => 'edit',
+		'method'          => 'post',
     	'plugintype'      => 'artefact',
     	'pluginname'      => 'blog',
 	   	'jsform'          => true,
 	   	'renderer'        => 'table',
-    	'successcallback' => 'editfragmentblog_submit',
+    	'successcallback' => 'edit_submit',
     	'elements'        => $elements
 	)); 
 	
 	$smarty = smarty();
-	$smarty->assign_by_ref('form', $form);
+	$smarty->assign('form', $form);
 	
 	if ($artefact->count_published_posts() == 0) {
 		$smarty->assign('noposts', 'There are no published posts in this blog for creating new fragment.');
@@ -85,7 +85,7 @@ function delete_fragment($todelete, $a) {
     redirect('/artefact/blog/fragments.php?id=' . $a);
 }
 
-function editfragmentblog_submit(Pieform $form, $values) {
+function edit_submit(Pieform $form, $values) {
     global $SESSION, $aid, $new;
 
     $fordb = (object) array(
@@ -120,9 +120,9 @@ function editfragmentblog_submit(Pieform $form, $values) {
     //$form->reply(PIEFORM_OK, $result);
 }
 
-function editfragmentblog_cancel_submit() {
+function edit_cancel_submit() {
 	global $aid;
-    redirect(get_config('wwwroot') . '/artefact/blog/fragments.php?id=' . $aid);
+    redirect('/artefact/blog/fragments.php?id=' . $aid);
 }
 
 ?>

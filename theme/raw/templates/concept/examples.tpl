@@ -32,15 +32,25 @@
         		{/foreach}
   				</table>
   			</td>
+  		{elseif $example->type == 'bookmark'}
+  			<td width='50%'>
+  				<table>
+  					<tr><td><a href='{$example->config->title}'>{$example->config->title}</a></td></tr>
+  					<tr><td><strong>Last Accessed:</strong> {$example->config->note|date_format:"%d-%m-%Y"}</td></tr>
+  					<tr><td>{$example->config->description|clean_html|safe}</td></tr>
+  				</table>
+  			</td>
 		{elseif $example->type == 'file'}
 			<td width='50%'><i>{$example->config|clean_html|safe}</i></td>
 		{/if}
 		<td width='50%'>
 			<h4>Reflection</h4>
-			{if $example->type != 'blogpost'}
-				<a href="{$WWWROOT}artefact/file/edit.php?fid={$example->id}&id={$example->aid}" class="icon btn-edit">{str tag="edit"}</a> &nbsp;|<a href="{$WWWROOT}artefact/file/edit.php?delete={$example->id}&id={$example->aid}" class="icon btn-del">{str tag="delete"}</a>
-			{else}
+			{if $example->type == 'blogpost'}
 				<a href="{$WWWROOT}artefact/blog/edit.php?bid={$example->id}&id={$example->aid}" class="icon btn-edit">{str tag="edit"}</a> &nbsp;|<a href="{$WWWROOT}artefact/blog/edit.php?delete={$example->id}&id={$example->aid}" class="icon btn-del">{str tag="delete"}</a>
+			{elseif $example->type == 'bookmark'}
+				<a href="{$WWWROOT}concept/bookmark/edit.php?edit={$example->id}&id={$example->aid}" class="icon btn-edit">{str tag="edit"}</a> &nbsp;|<a href="{$WWWROOT}concept/bookmark/edit.php?delete={$example->id}&id={$example->aid}" class="icon btn-del">{str tag="delete"}</a>	
+			{else}
+				<a href="{$WWWROOT}artefact/file/edit.php?fid={$example->id}&id={$example->aid}" class="icon btn-edit">{str tag="edit"}</a> &nbsp;|<a href="{$WWWROOT}artefact/file/edit.php?delete={$example->id}&id={$example->aid}" class="icon btn-del">{str tag="delete"}</a>
 			{/if}
 			<p>{$example->reflection|clean_html|safe}</p>
 			{if $example->complete == 1}

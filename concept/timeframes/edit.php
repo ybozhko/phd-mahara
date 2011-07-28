@@ -23,7 +23,6 @@
  * @copyright  (C) 2011 Yuliya Bozhko, yuliya.bozhko@gmail.com
  *
  */
-
 define('INTERNAL', 1);
 define('MENUITEM', 'myportfolio/concept');
 
@@ -32,7 +31,7 @@ define('SECTION_PLUGINNAME', 'concept');
 define('SECTION_PAGE', 'edit');
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
-require_once(get_config('libroot') . 'pieforms/pieform.php');
+require_once('pieforms/pieform.php');
 require_once('concept.php');
 
 $new = param_boolean('new', 0);
@@ -57,6 +56,7 @@ if($del == 0) {
 	    'name' => 'editmap',
 	    'plugintype' => 'core',
 	    'pluginname' => 'concept',
+		'renderer'   => 'table',
 	    'successcallback' => 'submit',
 	    'elements' => array(
 			'name' => array(
@@ -117,7 +117,7 @@ function submit(Pieform $form, $values) {
     redirect('/concept/timeframes/');
 }
 
-function edit_cancel_submit() {
+function editmap_cancel_submit() {
     redirect('/concept/timeframes/');
 } 
 

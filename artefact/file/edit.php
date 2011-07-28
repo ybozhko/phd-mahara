@@ -155,9 +155,6 @@ function editfragment_submit(Pieform $form, $values) {
 	
 	db_begin();
     if (!$new) {
-	//echo '<pre>';
-	//print_r($values);
-	//echo '</pre>';
     	update_record('concept_example', $fordb, 'id');
     }
     else {

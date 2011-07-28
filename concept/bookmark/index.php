@@ -83,10 +83,14 @@ $elements = array(
 
 if($bookmarks)
 	foreach($bookmarks as $b) {
+		$elements['aid'] = array(                
+			'type' => 'hidden',
+			'value' => $b->id,
+		);
 		$form = array(
     		'name' => 'newform' . $b->id,
     		'plugintype' => 'artefact',
-    		'pluginname' => 'resume',
+    		'pluginname' => 'concept',
     		'elements' => $elements,
     		'successcallback' => 'newform_submit',
 		);
@@ -97,4 +101,27 @@ $smarty = smarty(array('jquery'));
 $smarty->assign('PAGEHEADING', TITLE);
 $smarty->assign('bookmarks', $bookmarks);
 $smarty->display('concept/bookmark/index.tpl');
+
+function newform_submit(Pieform $form, $values) {
+	global $SESSION;
+	
+	db_begin();        	
+    $fordb = (object) array(
+	    'id' => 0,
+		'aid' => $values['aid'],
+		'cid' => !empty($values['concept']) ? $values['concept'] : null,
+    	'type' => $values['etype'],
+		'title' => $values['title'],
+    	'cdate' => db_format_timestamp($values['cdate']),
+		'reflection' =>  $values['reflection'],
+		'config' => 'none',
+    	'complete' => 0,
+    );
+    insert_record('concept_example', $fordb, 'id');
+    db_commit();
+    
+	$SESSION->add_ok_msg('New example was successfully created.');
+    redirect('/concept/bookmark/');	
+}
+
 ?>

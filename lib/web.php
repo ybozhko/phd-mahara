@@ -82,7 +82,7 @@ function smarty($javascript = array(), $headers = array(), $pagestrings = array(
     $jswwwroot = json_encode($wwwroot);
 
     $theme_list = array();
-    
+
     if (function_exists('pieform_get_headdata')) {
         $headers = array_merge($headers, pieform_get_headdata());
     }
