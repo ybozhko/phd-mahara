@@ -34,15 +34,13 @@ require_once('pieforms/pieform.php');
 require_once('pieforms/pieform/elements/calendar.php');
 require_once('concept.php');
 
-define('TITLE', 'Editing record');
-
 $user = $USER->get('id');
 $aid = param_integer('id', 0);
 $delete = param_integer('delete', 0);
 $edit = param_integer('edit', 0);
 $new = param_boolean('new', 0);
 
-$smarty = smarty(array('lib/pieforms/static/core/pieforms.js',));
+$smarty = smarty();
 
 if($delete != 0) {
 	$form = pieform(array(
@@ -56,6 +54,7 @@ if($delete != 0) {
         	),
     	),
 	));
+	$smarty->assign('PAGEHEADING', 'Deleting record');
 	$smarty->assign('message', "Are you sure that you want to delete this record?");
 } 
 else {	
@@ -126,9 +125,9 @@ else {
 	    'successcallback' => 'edit_item_submit',
 		'elements' => $elements
 	));
+	$smarty->assign('PAGEHEADING', 'Editing record');
 }
 
-$smarty->assign('PAGEHEADING', TITLE);
 $smarty->assign('form', $form);
 $smarty->display('concept/bookmark/edit.tpl');
 
@@ -150,28 +149,30 @@ function deleteitem_submit(Pieform $form, $values) {
 }
 
 function edit_item_submit(Pieform $form, $values) {
-    global $SESSION, $aid, $new, $edit;
+    global $SESSION, $aid, $new, $edit, $user;
     
     if($new) {
+		$dbnow = db_format_timestamp(time());
+    	$fordb = (object) array(    	
+	    	'id' => 0,
+			'artefacttype' => 'bookmark',
+			'owner'	=> $user,
+    		'ctime' => $dbnow,
+    		'mtime' => $dbnow,
+    		'atime' => $dbnow,
+    		'title' => $values['title'],
+			'description' =>  $values['reflection'],
+			'note' => db_format_timestamp($values['cdate']),
+    		'author' => $user,
+		);
     	
-    	
-    	insert_record('artefact', $fordb, 'id');    	
+    	insert_record('artefact', $fordb, 'id');    
+    	$SESSION->add_ok_msg("Bookmark was successfully created.");	
     }
-    elseif($edit == 0) {
-    	
-    	
-//    	$fordb = (object) array(
-//	    	'id' => ,
-//			'title' => ,
-//			'description' =>  ,
-//    		'note' => ),
-//		);
-    	
+    elseif($edit == 0) {   	
 		execute_sql("UPDATE {artefact} SET title = '" . $values['title'] . "', description = '". $values['reflection'] ."', 
-			note = '". db_format_timestamp($values['cdate']) ."' WHERE id = ". $aid 
-			);
-		
-	    //update_record('artefact', $fordb, 'id');
+			note = '". db_format_timestamp($values['cdate']) ."' WHERE id = ". $aid);
+		$SESSION->add_ok_msg("Bookmark was successfully edited.");
     }
     else {
     	$fordb = (object) array(
@@ -187,9 +188,9 @@ function edit_item_submit(Pieform $form, $values) {
 		);
     	
     	update_record('concept_example', $fordb, 'id');
-    }	
+    	$SESSION->add_ok_msg("Example was successfully edited.");
+    }	    
     
-    $SESSION->add_ok_msg("Record was successfully completed.");
 	redirect('/concept/bookmark/');
 }
 

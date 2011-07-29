@@ -2,7 +2,7 @@
     <div class="rbuttons">
         <a class="btn" href="{$WWWROOT}concept/bookmark/edit.php?new=1">New Bookmark</a>
     </div>
-<p>On this page you can manage your bookmarks that can be used in the concept maps</p>
+<p>On this page you can manage your bookmarks that can be used in the concept maps and timelines.</p>
 {if $bookmarks}
 <table class="fullwidth listing">
 	<tbody>
