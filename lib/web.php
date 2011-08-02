@@ -1962,23 +1962,23 @@ function mahara_standard_nav() {
         ),
         array(
             'path' => 'groups',
-            'url' => 'group/mygroups.php',
+            'url' => 'user/myfriends.php',
             'title' => get_string('groups'),
             'weight' => 40,
             'accesskey' => 'g',
         ),
-        array(
-            'path' => 'groups/mygroups',
-            'url' => 'group/mygroups.php',
-            'title' => get_string('mygroups'),
-            'weight' => 10,
-        ),
-        array(
-            'path' => 'groups/find',
-            'url' => 'group/find.php',
-            'title' => get_string('findgroups'),
-            'weight' => 20,
-        ),
+//        array(
+//            'path' => 'groups/mygroups',
+//            'url' => 'group/mygroups.php',
+//            'title' => get_string('mygroups'),
+//            'weight' => 10,
+//        ),
+//        array(
+//            'path' => 'groups/find',
+//            'url' => 'group/find.php',
+//            'title' => get_string('findgroups'),
+//            'weight' => 20,
+//        ),
         array(
             'path' => 'groups/myfriends',
             'url' => 'user/myfriends.php',

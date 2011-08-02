@@ -50,15 +50,15 @@ else {
 	$artefact = artefact_instance_from_id($aid);
 
 	$elements = get_fragment_form_elements($data, $user, $aid, null, true);
-
+	$elements['submit']['goto'] = get_config('wwwroot') . 'artefact/blog/fragments.php?id=' . $aid;
+	
 	$form = pieform(array(
-    	'name'            => 'edit',
+    	'name'            => 'editblog',
 		'method'          => 'post',
     	'plugintype'      => 'artefact',
     	'pluginname'      => 'blog',
-	   	'jsform'          => true,
 	   	'renderer'        => 'table',
-    	'successcallback' => 'edit_submit',
+    	'successcallback' => 'editblog_submit',
     	'elements'        => $elements
 	)); 
 	
@@ -85,7 +85,7 @@ function delete_fragment($todelete, $a) {
     redirect('/artefact/blog/fragments.php?id=' . $a);
 }
 
-function edit_submit(Pieform $form, $values) {
+function editblog_submit(Pieform $form, $values) {
     global $SESSION, $aid, $new;
 
     $fordb = (object) array(
@@ -103,26 +103,14 @@ function edit_submit(Pieform $form, $values) {
 	db_begin();
     if (!$new) {
     	update_record('concept_example', $fordb, 'id');
+    	$SESSION->add_ok_msg("Fragment was successfully edited.");
     }
     else {
 	    insert_record('concept_example', $fordb, 'id');
+	    $SESSION->add_ok_msg("New fragment was successfully created.");
     }	
-	db_commit();
-	
-	$result = array(
-        'error'   => false,
-        'message' => "New fragment was successfully created.",
-        'goto'    => get_config('wwwroot') . '/artefact/blog/fragments.php?id=' . $aid,
-    );
-	
-    $SESSION->add_ok_msg("New fragment was successfully created.");
-    redirect('/artefact/blog/fragments.php?id=' . $aid);
-    //$form->reply(PIEFORM_OK, $result);
-}
+	db_commit();	
 
-function edit_cancel_submit() {
-	global $aid;
     redirect('/artefact/blog/fragments.php?id=' . $aid);
 }
-
 ?>
