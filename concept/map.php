@@ -102,10 +102,10 @@ $js = <<<EOF
 			            else {
 			            	$('#nexample, #rdef', menu).remove();
 			            	if (node[0].pid == -1)
-			            		$('#rconcept', menu).remove();
+			            		$('#rconcept, #rename', menu).remove();
 			            }
 			            return menu;
-			          },
+			        },
 			    	bindings: {
 			    		'nconcept': function(e) {
 							dialogOpen(ECOTree.T_CON);
@@ -159,6 +159,9 @@ $js = <<<EOF
 			    		'ndef': function(e) {
 							dialogOpen(ECOTree.T_DEF);
 			    		},
+			    		'rename': function(e) {
+			    			dialogRename(event_id);
+			    		},
 			    		'nexample': function(e) {
 							dialogChoose(event_id);
 			    		},
@@ -168,6 +171,37 @@ $js = <<<EOF
 			    	}
 			    });
 			    
+			};
+			
+			function dialogRename(rename_id) {
+				var name = $('#newname');
+				var form = $('#renameform');
+				name.val($('#'+rename_id).children().text().split(' Examples : ')[0]);
+			    
+				$('#rendialog').dialog({
+					autoOpen: false,
+					height: 200,
+					width: 320,
+					modal: true,
+					buttons: {
+						"Save": function() {
+							$.post('process.php', 
+									form.serialize() + '&ren_id=' + rename_id, 
+									function (result) {
+                    					$('#rendialog').dialog('close');
+                    					$('sample1').empty();
+                    					CreateTree(result);
+                    				}, 'json'
+                    		);
+						},
+						Cancel: function() {
+							$(this).dialog('close');
+						}
+					},
+					close: function() { name.val(''); }
+				});
+				
+				$('#rendialog').dialog('open');
 			};
 			
 			function dialogOpen(item_type){
@@ -182,7 +216,7 @@ $js = <<<EOF
 					modal: true,
 					buttons: {
 						"Save": function() {
-							var temp = name.val();
+							//var temp = name.val();
 										
 							$.post('process.php', 
 									form.serialize() + '&type=' + item_type + '&parent=' + event_id, 

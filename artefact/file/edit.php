@@ -74,7 +74,7 @@ if ($artefact->get('artefacttype') == 'image') {
 			
 			$(window).load(function() {
 				var jcrop_api = $.Jcrop('#cropbox', {
-					boxWidth: 600,
+					boxWidth: $('#main-wrapper').width() - 450,
 					boxHeight: 400,
 					onChange: showCoords,
 					onSelect: showCoords,

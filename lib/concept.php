@@ -673,13 +673,16 @@ class Concepts {
     	return $result;
     }
     
+    public static function get_map_id_from_cid($cid) {
+    	return get_record('concepts', 'id', $cid);
+    }
+    
     public static function get_examples($cid) {
     	$idlist = self::get_allnodesids($cid);
     	
-    	$examples = get_records_sql_array("SELECT e.*, a.ctime
+    	$examples = get_records_sql_array("SELECT e.*, e.cdate
     									FROM {concept_example} e 
-    									INNER JOIN {artefact} a ON a.id = e.aid
-    									WHERE e.cid IN (" . $idlist . ") ORDER BY a.ctime DESC", array());
+    									WHERE e.cid IN (" . $idlist . ") ORDER BY e.cdate DESC", array());
     	
     	foreach($examples as $e) {
     		if($e->type == 'blogpost') {
@@ -688,6 +691,16 @@ class Concepts {
     		}
     		elseif($e->type == 'bookmark') {
     			$e->config = get_record_sql("SELECT title, description, id, note FROM {artefact} WHERE id = ?", array($e->aid));
+    		}
+    		elseif($e->type == 'nosupport') {
+    			$a = artefact_instance_from_id($e->aid);
+				$rendered = $a->render_self(array('mapid' => self::get_map_id_from_cid($cid)->map));
+        		$content = '';
+				if (!empty($rendered['javascript'])) {
+    				$content = '<script type="text/javascript">' . $rendered['javascript'] . '</script>';
+				}
+				$content .= $rendered['html'];
+				$e->config = $content;
     		}
     	}
     	
@@ -721,6 +734,16 @@ class Concepts {
     			}
     	        elseif($e->type == 'bookmark') {
     				$e->config = get_record_sql("SELECT title, description, id, note FROM {artefact} WHERE id = ?", array($e->aid));
+    			}
+    	        elseif($e->type == 'nosupport') {
+    				$a = artefact_instance_from_id($e->aid);
+					$rendered = $a->render_self(array('mapid' => $mapid));
+        			$content = '';
+					if (!empty($rendered['javascript'])) {
+    					$content = '<script type="text/javascript">' . $rendered['javascript'] . '</script>';
+					}
+					$content .= $rendered['html'];
+					$e->config = $content;
     			}
     		}    		
     	}

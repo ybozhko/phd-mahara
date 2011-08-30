@@ -34,6 +34,7 @@ define('SECTION_PAGE', 'index');
 require(dirname(dirname(__FILE__)) . '/init.php');
 require_once('pieforms/pieform.php');
 require_once('concept.php');
+require_once(get_config('docroot') . 'artefact/lib.php');
 
 $cid = param_integer('id', 0);
 
@@ -51,7 +52,7 @@ $js = <<<EOF
 			$(this).load(function() {
 				var a = $(this).attr('alt').split(',');
 				$(this).Jcrop({
-					boxWidth: 600,
+					boxWidth: $("#main_table").width() / 2,
 					boxHeight: 400,
 					bgOpacity: 0.3,
 					setSelect: [a[0], a[1], a[2], a[3]],

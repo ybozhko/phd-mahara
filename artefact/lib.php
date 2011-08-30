@@ -1620,7 +1620,7 @@ function get_fragment_form_elements($data = null, $user, $artefact = null, $exte
 			'elements'     => array(
 				'video'   => array(
 					'type'  => 'html',
-					'value' => "<video id='video' controls autobuffer='true' width='600px'>
+					'value' => "<video id='video' controls autobuffer='true' width='javascript:$('#main-wrapper').width() - 350;'>
     								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/mp4'>
     								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/ogg'>			
     								<source src='" . get_config('wwwroot') . "artefact/file/download.php?file=". $artefact ."' type='video/x-matroska'>
@@ -1724,12 +1724,44 @@ function get_fragment_form_elements($data = null, $user, $artefact = null, $exte
 	    $elements['config'] = array(                
 			'type' => 'textarea',
 	    	'rows'		   => 10,
-			'cols'		   => 50,
+			'cols'		   => 60,
 			'defaultvalue' => $text,
 		);
 		$elements['etype'] = array(                
 			'type' => 'hidden',
 			'value' => 'file',
+		);	
+	} else {
+		$a = artefact_instance_from_id($artefact);
+		$rendered = $a->render_self(array());
+        $content = '';
+		if (!empty($rendered['javascript'])) {
+    		$content = '<script type="text/javascript">' . $rendered['javascript'] . '</script>';
+		}
+		$content .= $rendered['html'];
+		$elements['nosupportoptions'] = array(
+			'type'         => 'fieldset',
+			'collapsible'  => false,
+			'legend'       => 'Step 1. File Attachment',
+			'elements'     => array(
+				'filebox'   => array(
+					'type'  => 'html',
+					'name'  => 'download',
+					'value' => $content
+				)			
+			),
+	    );
+	    $elements['config'] = array(                
+			'type' => 'hidden',
+			'value' => 'Entire file',
+		);
+		$elements['complete'] = array(                
+			'type' => 'hidden',
+			'value' => 0,
+		);
+		$elements['etype'] = array(                
+			'type' => 'hidden',
+			'value' => 'nosupport',
 		);	
 	}
 
@@ -1762,7 +1794,7 @@ function get_fragment_form_elements($data = null, $user, $artefact = null, $exte
 				'type'         => 'textarea',
 				'title'        => 'Reflection',
 				'rows'		   => 20,
-				'cols'		   => 80,
+				'cols'		   => 60,
 				'description'  => 'Reflection is an important aspect of your ePortfolio presentation. Describe why you think this fragment is important, what it represents, etc.',
 				'defaultvalue' => $data ? $data->reflection : null,
 				'rules' 	   => array('required' => true),

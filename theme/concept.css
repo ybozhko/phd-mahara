@@ -93,6 +93,7 @@ li.image span.icon { background:url(images/timeline/image.png) no-repeat; }
 li.file span.icon { background:url(images/timeline/file.png) no-repeat; }
 li.video span.icon { background:url(images/timeline/video.png) no-repeat; }
 li.audio span.icon { background:url(images/timeline/audio.png) no-repeat; }
+li.nosupport span.icon { background:url(images/timeline/document.png) no-repeat; }
 
 div.content{
 	display:none;

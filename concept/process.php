@@ -39,6 +39,7 @@ $delete = $_POST['delete'];
 $tf = $_POST['tf'];
 $cn = $_POST['cn'];
 $def = $_POST['def'];
+$rename = $_POST['ren_id'];
 
 if(isset($tf) && isset($cn)) {
 	$stylesheet = array(
@@ -56,7 +57,13 @@ if(isset($tf) && isset($cn)) {
 }
 else {
 	if (!isset($delete)) {
-		if(!isset($def)) {
+		if(isset($rename)) {
+			$newname = $_POST['newname'];
+			db_begin();
+			execute_sql("UPDATE {concepts} SET name = ? WHERE id = ?", array($_POST['newname'], $_POST['ren_id']));
+			db_commit();
+		}
+		elseif(!isset($def)) {
 			$data = (object)array(
 				'map' => $_POST['map'],
 				'parent' => $_POST['parent'],

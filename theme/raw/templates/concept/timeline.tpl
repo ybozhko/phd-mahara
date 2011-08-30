@@ -44,7 +44,7 @@
                 		{$event->title}
  						<div style="display:none;" id="_{$event->id}" title="{$event->title}">
  						
-							<table border='0'>
+							<table border='0' width='100%'>
 								<tr><td colspan='2'><label>Concept: </label>{$event->concept}</td></tr>
 								<tr>
 								{if $event->type == 'image'}
@@ -84,6 +84,8 @@
 						  			</td>
 								{elseif $event->type == 'file'}
 									<td width='50%'><i>{$event->config|clean_html|safe}</i></td>
+								{else}
+									<td width='50%'>{$event->config|safe}</td>
 								{/if}
 								<td>
 									<h4>Reflection</h4>

@@ -898,6 +898,9 @@ class ArtefactTypeFile extends ArtefactTypeFileBase {
         if (isset($options['viewid'])) {
             $downloadpath .= '&view=' . $options['viewid'];
         }
+        elseif(isset($options['mapid'])) {
+        	$downloadpath .= '&map=' . $options['mapid'];
+        }
         $filetype = get_string($this->get('oldextension'), 'artefact.file');
         if (substr($filetype, 0, 2) == '[[') {
             $filetype = $this->get('oldextension') . ' ' . get_string('file', 'artefact.file');

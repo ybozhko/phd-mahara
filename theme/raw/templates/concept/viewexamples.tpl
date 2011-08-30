@@ -7,13 +7,13 @@
 	<fieldset id='f_{$example->id}' class="collapsible">
 	<legend><a href='javascript:toggle_fieldset({$example->id});'>{$example->title}</a></legend>
 	<div>
-	<table border='0'><tr>
+	<table border='0' id='main_table' width='100%'><tr>
 		{if $example->type == 'image'}
 			<td width='50%'><img id='cropbox_{$example->id}' alt='{$example->config}' src='{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}' width='600px' /></td>
 		{elseif $example->type == 'video'}
 			{assign var=time value=","|explode:$example->config} 
 			<td width='50%'>
-		  	<video id="video_{$example->id}" oncanplay="startVideo({$example->id}, {$time[0]})" ontimeupdate="stopVideo({$example->id}, {$time[0]}, {$time[1]})" autobuffer="true" width="400px" height="300px">
+		  	<video id="video_{$example->id}" oncanplay="startVideo({$example->id}, {$time[0]})" ontimeupdate="stopVideo({$example->id}, {$time[0]}, {$time[1]})" autobuffer="true" width="javascript:$('#main_table').width() / 2" max-height="400px">
     			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/ogg'>
     			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/webm'>
     			<source src="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}" type='video/mp4'>
@@ -45,6 +45,8 @@
   			</td>
 		{elseif $example->type == 'file'}
 			<td width='50%'><i>{$example->config|clean_html|safe}</i></td>
+		{else}
+			<td width='50%'>{$example->config|safe}</td>
 		{/if}
 		<td width='50%'>
 			<h4>Reflection</h4>
@@ -52,7 +54,7 @@
 			{if $example->complete == 1}
 				<p><a href="{$WWWROOT}artefact/file/download.php?file={$example->aid}&map={$map}">Download entire file</a></p>
 			{/if}
-			<p><i>{$example->ctime|date_format:"%d-%m-%Y"}</i></p> 
+			<p><i>{$example->cdate|date_format:"%d-%m-%Y"}</i></p> 
 		</td></tr>
 		</table>
 	</div>
@@ -67,7 +69,7 @@ $(function(){
 		$(this).load(function() {
 			var a = $(this).attr('alt').split(',');
 			$(this).Jcrop({
-				boxWidth: 600,
+				boxWidth: $("#main_table").width() / 2,
 				boxHeight: 400,
 				bgOpacity: 0.3,
 				setSelect: [a[0], a[1], a[2], a[3]],

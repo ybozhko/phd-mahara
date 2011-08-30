@@ -11,7 +11,7 @@
                 		{$event->title}
  						<div style="display:none;" id="_{$event->id}" title="{$event->title}">
  						
-							<table border='0'>
+							<table border='0' width='100%'>
 								<tr><td colspan='2'><label>Concept: </label>{$event->concept}</td></tr>
 								<tr>
 								{if $event->type == 'image'}
@@ -30,8 +30,29 @@
 						  			<p><input type="button" value="Play" id="playpause_{$event->id}" onclick="playOrPause({$event->id})"></p>
 						  			<p><label>Fragment length: </label> {$time[1]-$time[0]}s</p>
 						  			</td>
+								{elseif $event->type == 'blogpost'}
+  									<td width='50%'>
+  										<table id="blogtable" class="fullwidth listing">
+  										{foreach from=$event->config item=post}
+            								<tr class="{cycle values='r0,r1'}">
+                								<td class="c2"><a class="blog-title" href="">{$post->title} ({$post->ctime})</a>
+                								<div class="blog-desc hidden" id="blog-desc-{$post->id}">{$post->description|clean_html|safe}</div></td>
+            								</tr>
+        								{/foreach}
+  										</table>
+  									</td>
+  								{elseif $event->type == 'bookmark'}
+						  			<td width='50%'>
+						  				<table>
+						  					<tr><td><a href='{$event->config->title}'>{$event->config->title}</a></td></tr>
+						  					<tr><td><strong>Last Accessed:</strong> {$event->config->note|date_format:"%d-%m-%Y"}</td></tr>
+						  					<tr><td>{$event->config->description|clean_html|safe}</td></tr>
+						  				</table>
+						  			</td>
 								{elseif $event->type == 'file'}
 									<td width='50%'><i>{$event->config|clean_html|safe}</i></td>
+								{else}
+									<td width='50%'>{$event->config|safe}</td>
 								{/if}
 								<td>
 									<h4>Reflection</h4>

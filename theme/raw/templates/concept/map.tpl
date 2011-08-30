@@ -18,6 +18,7 @@
 			<li id="rconcept">{str section="concept" tag="rconcept"}</li>
 			<li id="ndef">{str section="concept" tag="newdef"}</li>
 			<li id="rdef">{str section="concept" tag="rdef"}</li>
+			<li id="rename">{str section="concept" tag="rename"}</li>
 			<li id="nexample">{str section="concept" tag="newexample"}</li>
 			<li id="vexample">{str section="concept" tag="viewexample"}</li>
     	</ul>
@@ -32,6 +33,14 @@
 		<textarea cols='35' rows='10' id="description" name="description" ></textarea>
 	</form>
 	</div>  
+	
+	<div style="display: none" id="rendialog" title="Rename">
+	<form id='renameform'>
+		<input type='hidden' id="map" name="map" value="{$id}"/>
+		<label for='newname'>Name</label><br/>
+		<input type='text' id='newname' name="newname" width='300px' value=''/>
+	</form>
+	</div> 
 	
 	<div style="display: none" id="rdialog" title="Are you sure that you want remove this item?">
 		<p>This action will delete all related definitions and examples.</p>
