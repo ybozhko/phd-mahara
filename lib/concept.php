@@ -761,6 +761,19 @@ class Concepts {
     				$posts = $e->config;
     				$e->config = get_records_sql_array("SELECT title, ctime, description, id FROM {artefact} WHERE id IN (". $posts .")", array());
     			}
+    		    elseif($e->type == 'bookmark') {
+    				$e->config = get_record_sql("SELECT title, description, id, note FROM {artefact} WHERE id = ?", array($e->aid));
+    			}
+    	        elseif($e->type == 'nosupport') {
+    				$a = artefact_instance_from_id($e->aid);
+					$rendered = $a->render_self(array('mapid' => $mapid));
+        			$content = '';
+					if (!empty($rendered['javascript'])) {
+    					$content = '<script type="text/javascript">' . $rendered['javascript'] . '</script>';
+					}
+					$content .= $rendered['html'];
+					$e->config = $content;
+    			}
     		}    		
     	}
     	
