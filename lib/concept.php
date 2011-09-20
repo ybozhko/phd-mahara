@@ -899,9 +899,11 @@ class Concepts {
     	db_commit();
     }
     
-    function get_bookmarks() {    	
-    	($bookmarks = get_records_array('artefact', 'artefacttype', 'bookmark')) || ($bookmarks = array());
-
+    function get_bookmarks() { 
+    	global $USER; 
+    	($bookmarks = get_records_select_array('artefact', 'owner = ? AND artefacttype = \'bookmark\' ', array($USER->get('id')))) 
+    	|| ($bookmarks = array());
+    	
     	if(!empty($bookmarks))
     		foreach($bookmarks as $b) {
     			($examples = get_records_array('concept_example','aid', $b->id, 'cdate ASC')) || ($examples = array());
