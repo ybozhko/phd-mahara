@@ -11,38 +11,33 @@
 			</div>
 		</form>
 		<div id="sample1"></div>
-		
-	<div class="contextMenu" id="menu">
-    	<ul>
-			<li id="nconcept">{str section="concept" tag="newconcept"}</li>
-			<li id="rconcept">{str section="concept" tag="rconcept"}</li>
-			<li id="ndef">{str section="concept" tag="newdef"}</li>
-			<li id="rdef">{str section="concept" tag="rdef"}</li>
-			<li id="rename">{str section="concept" tag="rename"}</li>
-			<li id="nexample">{str section="concept" tag="newexample"}</li>
-			<li id="vexample">{str section="concept" tag="viewexample"}</li>
-    	</ul>
-	</div>
 	
-	<div style="display: none" id="cdialog" title="Create new concept">
+	<ul id="myMenu" class="contextMenu">
+		<li class="newc"><a href="#newc">New Concept</a></li>
+		<li class="newd"><a href="#newd">New Definition</a></li>
+		<li class="edit separator"><a href="#edit">Edit</a></li>
+		<li class="delete"><a href="#delete">Delete</a></li>
+		<li class="nexample separator"><a href="#nexample">New Examples</a></li>
+		<li class="vexample"><a href="#vexample">View Examples</a></li>
+	</ul>
+	
+	<div style="display: none" id="cdialog" title="New ...">
 	<form id='newc'>
 		<input type='hidden' id="map" name="map" value="{$id}"/>
 		<label for='name'>Name</label><br/>
-		<input type='text' id='name' name="name" width='300px' value=''/><br/>
-		<label for='description'>Description</label><br/>
-		<textarea cols='35' rows='10' id="description" name="description" ></textarea>
+		<input type='text' id='name' name="name" style="width:285px" value=''/>
 	</form>
 	</div>  
 	
-	<div style="display: none" id="rendialog" title="Rename">
+	<div style="display: none" id="rendialog" title="Edit">
 	<form id='renameform'>
 		<input type='hidden' id="map" name="map" value="{$id}"/>
 		<label for='newname'>Name</label><br/>
-		<input type='text' id='newname' name="newname" width='300px' value=''/>
+		<input type='text' id='newname' name="newname" style="width:285px"/>
 	</form>
 	</div> 
 	
-	<div style="display: none" id="rdialog" title="Are you sure that you want remove this item?">
+	<div style="display: none" id="rdialog" title="Are you sure that you want delete this item?">
 		<p>This action will delete all related definitions and examples.</p>
 	</div> 
 	

@@ -933,6 +933,10 @@ ECOTree.prototype.searchNodes = function (str) {
     this.UpdateTree();
 };
 
+ECOTree.prototype.getNode = function (nodeid) {
+    return this.nDatabaseNodes[this.mapIDs[nodeid]];
+};
+
 ECOTree.prototype.selectAll = function () {
     if (this.config.selectMode != ECOTree.SL_MULTIPLE) {
         return;

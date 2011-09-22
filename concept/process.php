@@ -69,7 +69,7 @@ else {
 				'parent' => $_POST['parent'],
 				'type' => $_POST['type'],
 				'name' => $_POST['name'],
-				'description' => $_POST['description'],
+				'description' => '',
 				'link' => null
 			);
 		
