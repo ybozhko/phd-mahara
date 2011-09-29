@@ -522,6 +522,7 @@ input#files_filebrowser_edit_artefact:active {
 
 div.btn-del input.submit,
 div.btn-fragments input.submit, 
+div.btn-fragments-b input.submit,
 input.submit.btn-del,
 input.submit.btn-copy,
 div.btn-add input.submit, 
@@ -641,6 +642,11 @@ div.btn-edit input.submit,
 	background: transparent url(../images/icon-fragments.gif) no-repeat left;
 	padding-left: 13px;
 }
+.btn-fragments-b {
+	background: transparent url(../images/icon-fragments-b.gif) no-repeat left;
+	padding-left: 13px;
+	color: #565051 !important;
+}
 .btn-del {
     background: transparent url(../images/icon-delete.gif) no-repeat left;
     color: #ca0000 !important;
@@ -678,7 +684,6 @@ div.btn-edit input.submit,
     background: transparent url(../images/icon-add.gif) no-repeat left;
 	padding-left: 13px;
 }
-
 .btn-group {
     background: transparent url(../images/icon-group.gif) no-repeat left center;
 	padding-left: 13px;

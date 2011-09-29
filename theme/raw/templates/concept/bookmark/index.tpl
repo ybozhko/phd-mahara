@@ -18,7 +18,7 @@
 		<tr><td>{$b->description|clean_html|safe}</td></tr>
 		<tr><td><strong>Last accessed: </strong>{$b->note|date_format:"%d-%m-%Y"}</td></tr>
 		<tr><td>
-			<input type="submit" onclick="javascript:toggle_visibility('examplestable-{$b->id}');" class="icon btn-fragments s" value="Fragments({$b->parent})" />
+			<input type="submit" onclick="javascript:toggle_visibility('examplestable-{$b->id}');" {if $b->parent == 0} class="icon btn-fragments-b s" {else} class="icon btn-fragments s"{/if} value="Fragments({$b->parent})" />
 			<a href='javascript:;' id='new-{$b->id}' class='btn-add s' onclick='javascript:showhide_form("show",{$b->id});'>New Fragment</a>
 			<table id='examplestable-{$b->id}' class='hidden' width='100%'><tbody>
 				{if !$b->container}

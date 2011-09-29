@@ -36,6 +36,7 @@ require_once('pieforms/pieform.php');
 require_once('concept.php');
 
 $delete = $_POST['delete'];
+$change = $_POST['change'];
 $tf = $_POST['tf'];
 $cn = $_POST['cn'];
 $def = $_POST['def'];
@@ -61,6 +62,13 @@ else {
 			$newname = $_POST['newname'];
 			db_begin();
 			execute_sql("UPDATE {concepts} SET name = ? WHERE id = ?", array($_POST['newname'], $_POST['ren_id']));
+			db_commit();
+		}
+		elseif(isset($change)) {
+			$change == 0 ? $change = 1 : $change = 0;
+			db_begin();			 
+			execute_sql("UPDATE {concept_example} SET cid = NULL WHERE cid = ?", array($_POST['id']));
+			execute_sql("UPDATE {concepts} SET type = ? WHERE id = ?", array($change, $_POST['id']));
 			db_commit();
 		}
 		elseif(!isset($def)) {

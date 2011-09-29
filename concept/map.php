@@ -61,38 +61,41 @@ $js = <<<EOF
 		CreateTree($jnodes);
 	});		
 		
-		function ContextMenu() {
-			$('#myMenu').appendTo('body');
-			
-			$("#sample1 DIV").contextMenu(
-				{ menu: 'myMenu' }, 
-				function(action, el, pos) {
-					var el_id = $(el).attr('id');
-					node = t.getNode(el_id);
+	function ContextMenu() {
+		$('#myMenu').appendTo('body');
+		
+		$("#sample1 DIV").contextMenu(
+			{ menu: 'myMenu' }, 
+			function(action, el, pos) {
+				var el_id = $(el).attr('id');
+				node = t.getNode(el_id);
 
-					switch(action) {
-						case 'newc':
-  							dialogOpen(ECOTree.T_CON, el_id);
-  							break;
-						case 'newd':
-  							dialogOpen(ECOTree.T_DEF, el_id);
-  							break;
-						case 'vexample':
-  							window.location.href = "{$wwwroot}concept/examples.php?id="+el_id;
-  							break;
-  						case 'edit':
-  							dialogRename(el_id);
-  							break;
-  						case 'nexample':
-  							dialogChoose(el_id);
-  							break;
-  						case 'delete':
-  							dialogDelete(el_id);
-  							break;
-					}
+				switch(action) {
+					case 'newc':
+  						dialogOpen(ECOTree.T_CON, el_id);
+  						break;
+					case 'newd':
+  						dialogOpen(ECOTree.T_DEF, el_id);
+  						break;
+					case 'vexample':
+  						window.location.href = "{$wwwroot}concept/examples.php?id="+el_id;
+  						break;
+  					case 'edit':
+  						dialogRename(el_id);
+  						break;
+  					case 'nexample':
+  						dialogChoose(el_id);
+  						break;
+  					case 'delete':
+  						dialogDelete(el_id);
+  						break;
+  					case 'change':
+  						dialogChange(node.type, el_id);
+  						break;
 				}
-			);		
-		}
+			}
+		);		
+	}
 		
 	function stopRKey(evt) {
 		var evt = (evt) ? evt : ((event) ? event : null);
@@ -139,6 +142,30 @@ $js = <<<EOF
 				});
 				$('#rdialog').dialog('open');			
 			}
+
+			function dialogChange(t, event_id) {
+			    $('#changedialog').dialog({
+					resizable: false,
+					height: 160,
+					width: 400,
+					modal: true,
+					buttons: {
+						"Change": function() {
+							$.post('process.php', 
+								'id=' + event_id + '&change=' + t + '&map=' + $('#map').val(), 
+								function (result) {
+                    				$('#changedialog').dialog('close');
+                    				$('sample1').empty();
+                    				CreateTree(result);
+                    			}, 'json'); 
+						},
+						Cancel: function() {
+							$(this).dialog('close');
+						}
+					}
+				});
+				$('#changedialog').dialog('open');			
+			}			
 			
 			function dialogRename(rename_id) {
 				var name = $('#newname');

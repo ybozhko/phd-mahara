@@ -46,6 +46,10 @@ if(jQuery)( function() {
 							menu.enableContextMenuItems();
 							
 							node = t.getNode($(srcElement).attr('id'));
+							children = node.nodeChildren.length;
+							
+							if (children != 0) menu.disableContextMenuItems('#change');
+							
 							if(node.type == ECOTree.T_DEF) menu.disableContextMenuItems('#newc,#newd');
 							else 
 								if (node.pid == -1) menu.disableContextMenuItems('#delete,#nexample');

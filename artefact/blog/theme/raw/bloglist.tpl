@@ -16,7 +16,7 @@
         <span class="s dull">{str tag=submittedforassessment section=view}</span>
         {else}
         <a href="{$WWWROOT}artefact/blog/settings/?id={$blog->id}" class="btn-settings">{str tag=settings}</a>
-        <a href="{$WWWROOT}artefact/blog/fragments.php?id={$blog->id}" class="icon btn-fragments s">Fragments({$blog->fragments})</a>
+        <a href="{$WWWROOT}artefact/blog/fragments.php?id={$blog->id}" {if $blog->fragments == 0} class="icon btn-fragments-b s" {else} class="icon btn-fragments s"{/if}>Fragments({$blog->fragments})</a>
         <a onClick="confirmdelete({$blog->id});" class="btn-del">{str tag=delete}</a>
         {/if}
         <div class="fr postcontrols">

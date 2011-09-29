@@ -65,7 +65,11 @@
     <td class="right">
     {if $editable && !$file->isparent}
         {if $file->artefacttype != 'folder'}
-    		<input type="submit" class="icon btn-fragments s" name="{$prefix}_fragments[{$file->id}]" value="Fragments({$file->fragments})" />
+    		{if $file->fragments == 0}
+    			<input type="submit" class="icon btn-fragments-b s" name="{$prefix}_fragments[{$file->id}]" value="Fragments({$file->fragments})" />
+    		{else}
+    			<input type="submit" class="icon btn-fragments s" name="{$prefix}_fragments[{$file->id}]" value="Fragments({$file->fragments})" />
+    		{/if}
 		{/if}
 	
       {if $file->artefacttype == 'archive'}<a href="{$WWWROOT}artefact/file/extract.php?file={$file->id}">{str tag=Unzip section=artefact.file}</a>{/if}

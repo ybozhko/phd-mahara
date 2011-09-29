@@ -775,7 +775,7 @@ ECOTree.prototype._drawTree = function () {
             s.push('>');
             s.push('<font face=Verdana size=1>');
             if (node.canCollapse) {
-                s.push('<a id="c' + node.id + '" href="javascript:' + this.obj + '.collapseNode(\'' + node.id + '\', true); updateMenu();" >');
+                s.push('<a id="c' + node.id + '" href="javascript:' + this.obj + '.collapseNode(\'' + node.id + '\', true); ContextMenu();" >');
                 s.push('<img border=0 src="' + ((node.isCollapsed) ? this.config.collapsedImage : this.config.expandedImage) + '" >');
                 s.push('</a>');
                 s.push('<img src="' + this.config.transImage + '" >');

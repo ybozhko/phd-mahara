@@ -7,7 +7,7 @@
 			<input id="search" value="" size="10" maxlength="20"></input>
 			<a href="javascript:SearchTree();"><img border=0 align="bottom" alt="" src="{theme_url filename='images/btn-search.gif'}"></a>						
 			<br/>	
-			<a href="javascript:t.collapseAll();">{str section="concept" tag="collapse"}</a> | <a href="javascript:t.expandAll();">{str section="concept" tag="expand"}</a>
+			<a href="javascript:t.collapseAll(); ContextMenu();">{str section="concept" tag="collapse"}</a> | <a href="javascript:t.expandAll(); ContextMenu();">{str section="concept" tag="expand"}</a>
 			</div>
 		</form>
 		<div id="sample1"></div>
@@ -17,8 +17,9 @@
 		<li class="newd"><a href="#newd">New Definition</a></li>
 		<li class="edit separator"><a href="#edit">Edit</a></li>
 		<li class="delete"><a href="#delete">Delete</a></li>
-		<li class="nexample separator"><a href="#nexample">New Examples</a></li>
-		<li class="vexample"><a href="#vexample">View Examples</a></li>
+		<li class="change"><a href="#change">Change Type</a></li>
+		<li class="nexample separator"><a href="#nexample">Add Example(s)</a></li>
+		<li class="vexample"><a href="#vexample">View Example(s)</a></li>
 	</ul>
 	
 	<div style="display: none" id="cdialog" title="New ...">
@@ -39,6 +40,10 @@
 	
 	<div style="display: none" id="rdialog" title="Are you sure that you want delete this item?">
 		<p>This action will delete all related definitions and examples.</p>
+	</div> 
+
+	<div style="display: none" id="changedialog" title="Change node type?">
+		<p>Changing node type might result in detaching all the examples referred to this node.</p>
 	</div> 
 	
 	<div id="edialog" title="Free fragments">
