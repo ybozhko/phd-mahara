@@ -124,6 +124,16 @@ class ConceptMap {
         	execute_sql('UPDATE {concept_example} SET cid = NULL WHERE cid = ?', array($del->id));
         }
         
+        //delete comments start
+		$todeletecomments = get_records_array('artefact_comment_comment','onmap', $this->id);
+		
+		foreach($todeletecomments as $del) {
+			$comment = artefact_instance_from_id($del->artefact);
+        	$comment->delete();
+		}
+		//delete comments end		
+		
+        delete_records('concept_access', 'map', $this->id);
         delete_records('concepts', 'map', $this->id);
         delete_records('concept_map_timeframe', 'map', $this->id);
         delete_records('concept_maps', 'id', $this->id);
@@ -825,8 +835,11 @@ class Concepts {
     }
     
     public static function get_free_fragments() {
-    	($records = get_records_sql_array('SELECT id, title, type, reflection
-    			FROM {concept_example} WHERE cid IS NULL ORDER BY id DESC', array())) 
+    	global $USER;
+    	
+    	($records = get_records_sql_array('SELECT a.id, a.title, a.type, a.reflection
+    			FROM {concept_example} a INNER JOIN {artefact} b ON a.aid = b.id 
+    			WHERE a.cid IS NULL and b.owner = ? ORDER BY a.id DESC', array($USER->get('id')))) 
     	|| ($records = array());
     	
     	return $records;

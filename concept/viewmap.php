@@ -100,12 +100,11 @@ $javascript = <<<EOF
 		function showExamples(nodeid) {
 			$("#conceptmap").css({'overflow':'hidden', 'height':'0px'});
 
-			$.post('viewexamples.php', 
+			$.post('viewexamples.json.php', 
 				'id=' + nodeid, 
 				function (result) {
             		$('#examples').append(result);
             	});
-            	
 			$('#examples').css('height', '100%');
 		}
 		
@@ -136,10 +135,6 @@ $view = null;
 $artefact = null;
 
 $feedback = ArtefactTypeComment::get_comments($limit, $offset, $showcomment, $view, $artefact, $map);
-
-//echo "<pre>";
-//	print_r($feedback);
-//echo "</pre>";
 
 $stylesheet = array(
 				'<link rel="stylesheet" type="text/css" href="' . $wwwroot . 'theme/concept.css">',

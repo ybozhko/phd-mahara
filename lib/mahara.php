@@ -1734,9 +1734,9 @@ function can_view_map($map_id, $user_id=null) {
         }
     }
 
-    if (!$user_id) {
-        return false;
-    }
+//    if (!$user_id) {
+//        return false;
+//    }
 
     require_once(get_config('libroot') . 'concept.php');
     $map = new ConceptMap($map_id);
@@ -1746,13 +1746,13 @@ function can_view_map($map_id, $user_id=null) {
     }
 
     $access = ConceptMap::user_access_records($map_id, $user_id);
-
+    
     if (empty($access)) {
         return false;
     }
 
     if ($SESSION->get('mnetuser')) {
-        $mnettoken = get_cookie('mmapaccess:'.$view_id);
+        $mnettoken = get_cookie('mmapaccess:'.$map_id);
     }
 
     foreach ($access as &$a) {
@@ -1790,7 +1790,7 @@ function can_view_map($map_id, $user_id=null) {
                         return true;
                     }
                 }
-                else if ($view->get('group') && $user->get('admin')) {
+                else if ($map->get('group') && $user->get('admin')) {
                     return true;
                 }
                 continue;

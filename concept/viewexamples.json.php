@@ -25,14 +25,41 @@
  */
 
 define('INTERNAL', 1);
+define('PUBLIC', 1);
+define('SECTION_PLUGINTYPE', 'core');
+define('SECTION_PLUGINNAME', 'concept');
 
 require(dirname(dirname(__FILE__)) . '/init.php');
 require_once('pieforms/pieform.php');
-require_once('concept.php');
+require_once('group.php');
+require_once(get_config('libroot') . 'concept.php');
 
 $cid = $_POST['id'];
-
 $concept = new Concepts($cid);
+
+//// access key for roaming teachers
+//$mnettoken = $SESSION->get('mnetuser') ? param_alphanum('mt', null) : null;
+//
+//// access key for logged out users
+//$usertoken = (is_null($mnettoken)) ? param_alphanum('t', null) : null;
+//
+//if ($mnettoken) {
+//    if (!$mapid = get_map_from_token($mnettoken)) {
+//        throw new AccessDeniedException(get_string('accessdenied', 'error'));
+//    }
+//}
+//else if ($usertoken) {
+//    if (!$mapid = get_map_from_token($usertoken)) {
+//        throw new AccessDeniedException(get_string('accessdenied', 'error'));
+//    }
+//}
+//else {
+//    $mapid = $concept->get('map');
+//}
+//
+if (!can_view_map($mapid)) {
+    throw new AccessDeniedException(get_string('accessdenied', 'error'));
+}
 
 define('TITLE', "Examples of '" . $concept->get('name') . "'");
 
@@ -42,14 +69,10 @@ $num = count($examples) - 1;
 
 $smarty = smarty(array('jquery', 'jquery-ui', 'jquery.jcrop')); 
 
-//echo '<pre>';
-//print_r($examples);
-//echo '</pre>';
-
-//$smarty->assign('INLINEJAVASCRIPT', $js);
 $smarty->assign('title', TITLE);
 $smarty->assign('examples', $examples);
 $smarty->assign('map', $concept->get('map'));
+
 $output = $smarty->fetch('concept/viewexamples.tpl');
 echo($output);
 
